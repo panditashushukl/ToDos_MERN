@@ -2,7 +2,7 @@
 const API_BASE_URL =
   import.meta.env.VITE_API_URL
     ? `${import.meta.env.VITE_API_URL}/api/v1`
-    : '/api/v1';
+    : 'https://todos-mern-wb64.onrender.com/api/v1';
 
 class ApiService {
   constructor() {
