@@ -8,16 +8,13 @@ export default defineConfig({
     tailwindcss()
   ],
   server: {
-    host: true,
-    open: true,
-    port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:3000',
+        target: 'https://todos-mern-wb64.onrender.com',
         changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, '/api'), // optional, depends on your backend
-      },
-    },
+        secure: false
+      }
+    }
   }
+  
 });
