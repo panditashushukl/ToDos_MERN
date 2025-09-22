@@ -4,8 +4,8 @@ import cors from "cors";
 
 const app = express();
 
-const productionOrigins = process.env.PROD_ORIGIN1 ? [process.env.PROD_ORIGIN1] : [];
-const devOrigins = process.env.DEV_ORIGIN1 ? [process.env.DEV_ORIGIN1] : [];
+const productionOrigins = [process.env.PROD_ORIGIN1].filter(Boolean);
+const devOrigins = [process.env.DEV_ORIGIN1].filter(Boolean);
 
 const allowedOrigins =
   process.env.NODE_ENV === "production" ? productionOrigins : devOrigins;
@@ -14,7 +14,7 @@ app.use(
   cors({
     origin: function (origin, callback) {
       if (!origin || allowedOrigins.includes(origin)) {
-        console.log(origin,allowedOrigins);        
+        console.log(origin, allowedOrigins);
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
