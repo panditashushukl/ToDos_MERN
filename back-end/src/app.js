@@ -4,22 +4,24 @@ import cors from "cors";
 
 const app = express();
 
-const allowedOrigins = process.env.CORS_ORIGINS
-  ? process.env.CORS_ORIGINS.split(",").map((origin) => origin.trim())
-  : [];
+const productionOrigins = process.env.PROD_ORIGIN1 ? [process.env.PROD_ORIGIN1] : [];
+const devOrigins = process.env.DEV_ORIGIN1 ? [process.env.DEV_ORIGIN1] : [];
+
+const allowedOrigins =
+  process.env.NODE_ENV === "production" ? productionOrigins : devOrigins;
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      console.log("Incoming request from origin:", origin);
       if (!origin || allowedOrigins.includes(origin)) {
+        console.log(origin,allowedOrigins);        
         callback(null, true);
       } else {
-        console.warn("Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
+    methods: ["GET", "POST", "PATCH", "DELETE"],
   })
 );
 
