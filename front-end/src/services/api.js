@@ -1,4 +1,4 @@
-const API_BASE_URL = `${import.meta.env.VITE_API_URL}/v1`
+const API_BASE_URL = `https://todos-mern-wb64.onrender.com/api/v1`
 
 class ApiService {
   constructor() {
