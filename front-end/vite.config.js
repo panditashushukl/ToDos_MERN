@@ -13,7 +13,7 @@ export default defineConfig(({ mode }) => {
     server: {
       proxy: {
         '/api': {
-          target: "https://todos-mern-wb64.onrender.com",
+          target: env.VITE_DEV_URL || 'http://localhost:3000',
           changeOrigin: true,
           secure: false,
         }
