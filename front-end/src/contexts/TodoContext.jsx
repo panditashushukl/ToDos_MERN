@@ -151,7 +151,6 @@ export const TodoProvider = ({ children }) => {
       return { success: true, todo: newTodo };
     } else {
       try {
-        setIsLoading(true);
         const response = await apiService.createTodo(todoData);
         const newTodo = response.data;
         
@@ -180,14 +179,15 @@ export const TodoProvider = ({ children }) => {
       return { success: true };
     } else {
       try {
-        setIsLoading(true);
         const response = await apiService.updateTodo(id, todoData);
         const updatedTodo = response.data;
         
         setTodos(prev => prev.map(todo => 
           todo._id === id ? updatedTodo : todo
         ));
-        
+
+        await refreshStats();
+
         return { success: true, todo: updatedTodo };
       } catch (err) {
         setError(err.message);
@@ -207,7 +207,6 @@ export const TodoProvider = ({ children }) => {
       return { success: true };
     } else {
       try {
-        setIsLoading(true);
         await apiService.deleteTodo(id);
         
         setTodos(prev => prev.filter(todo => todo._id !== id));
@@ -234,13 +233,14 @@ export const TodoProvider = ({ children }) => {
       return { success: true };
     } else {
       try {
-        setIsLoading(true);
         const response = await apiService.toggleTodoCompletion(id);
         const updatedTodo = response.data;
         
         setTodos(prev => prev.map(todo => 
           todo._id === id ? updatedTodo : todo
         ));
+
+        await refreshStats();
         
         return { success: true, todo: updatedTodo };
       } catch (err) {
@@ -263,13 +263,14 @@ export const TodoProvider = ({ children }) => {
       return { success: true };
     } else {
       try {
-        setIsLoading(true);
         const response = await apiService.toggleTodoArchive(id);
         const updatedTodo = response.data;
         
         setTodos(prev => prev.map(todo => 
           todo._id === id ? updatedTodo : todo
         ));
+        
+        await refreshStats();
         
         return { success: true, todo: updatedTodo };
       } catch (err) {
@@ -307,9 +308,8 @@ export const TodoProvider = ({ children }) => {
       return { success: true };
     } else {
       try {
-        setIsLoading(true);
         await apiService.updateLabel(oldLabel, newLabel);
-        await loadServerTodos(); // Reload all data
+        await loadServerTodos(); 
         return { success: true };
       } catch (err) {
         setError(err.message);
@@ -329,9 +329,9 @@ export const TodoProvider = ({ children }) => {
       return { success: true };
     } else {
       try {
-        setIsLoading(true);
         await apiService.deleteLabel(label);
-        await loadServerTodos(); // Reload all data
+        await loadServerTodos(); 
+        await refreshStats();
         return { success: true };
       } catch (err) {
         setError(err.message);
@@ -378,9 +378,9 @@ export const TodoProvider = ({ children }) => {
       return { success: true };
     } else {
       try {
-        setIsLoading(true);
         await apiService.bulkUpdateTodos(todoIds, operation);
-        await loadServerTodos(); // Reload all data
+        await loadServerTodos();
+        await refreshStats();
         return { success: true };
       } catch (err) {
         setError(err.message);
