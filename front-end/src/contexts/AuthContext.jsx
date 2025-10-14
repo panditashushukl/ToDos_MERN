@@ -119,7 +119,8 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (response.ok) {
-        return { success: true, user: data.data };
+        const loginResult = await login(username, password);
+        return loginResult;
       } else {
         return { success: false, error: data.message };
       }

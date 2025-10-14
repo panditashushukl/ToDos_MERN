@@ -8,7 +8,13 @@ import OverlayCard from "./Cards/OverlayCard"
 import LoginForm from "./Auth/LoginForm"
 import RegisterForm from "./Auth/RegisterForm"
 import AuthModal from "./Auth/AuthModal"
-
+import SocialLinksCard from "./social/SocialLinksCard"
+import SocialCard from "./social/SocialCard"
+import NavCard from "./nav/NavCard"
+import NavCardItem from "./nav/NavCardItem"
+import LabelCard from "./label/labelCard"
+import NotificationCard from "./notification/NotificationCard"
+import SearchComponent from "./search/SearchComponent"
 
 export {
   Header, 
@@ -20,5 +26,12 @@ export {
   OverlayCard,
   LoginForm,
   RegisterForm,
-  AuthModal
+  AuthModal,
+  SocialLinksCard,
+  SocialCard,
+  NavCard,
+  NavCardItem,
+  LabelCard,
+  NotificationCard,
+  SearchComponent,
 }

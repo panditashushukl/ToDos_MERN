@@ -1,50 +1,57 @@
-import React, { useState } from "react";
-import { useTodo } from "../../contexts/TodoContext";
-import { useAuth } from "../../contexts/AuthContext";
-import { TodoForm, TodoItem } from "../index";
+import { useTodo } from "./../../contexts/TodoContext";
+import { useAuth } from "./../../contexts/AuthContext";
+import { SearchComponent, TodoForm, TodoItem } from "./../index";
 
-export default function TodoCard({ searchTerm = "", sidebarFilter = "all" }) {
-  const { todos, isLoading, error, stats, isGuestMode } = useTodo();
+export default function TodoCard() {
+  const {
+    todos,
+    isLoading,
+    error,
+    stats,
+    isGuestMode,
+    statusFilter,
+    labelFilter,
+    handleStatusFilterChange,
+    handleLabelFilterChange,
+    searchTerm,
+  } = useTodo();
+
   const { isAuthenticated } = useAuth();
-  const [filter, setFilter] = useState("all"); // all, completed, pending, archived
 
-  // Combine sidebar filter with local filter
-  const activeFilter = sidebarFilter !== "all" ? sidebarFilter : filter;
-
-  const filteredTodos = todos.filter(todo => {
+  const filteredTodos = todos.filter((todo) => {
     const isCompleted = todo.isCompleted || todo.completed;
     const isArchived = todo.isArchieved || todo.archived;
     const content = todo.content || todo.todo || "";
-    
+
     // Apply search filter
-    const matchesSearch = !searchTerm || 
+    const matchesSearch =
+      !searchTerm ||
       content.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (todo.label && todo.label.toLowerCase().includes(searchTerm.toLowerCase()));
-    
+      (todo.label &&
+        todo.label.toLowerCase().includes(searchTerm.toLowerCase()));
+
     if (!matchesSearch) return false;
-    
+
+    // Apply label filter
+    const matchesLabel =
+      !labelFilter ||
+      (todo.label && todo.label.toLowerCase() === labelFilter.toLowerCase());
+
+    if (!matchesLabel) return false;
+
     // Apply status filter
-    switch (activeFilter) {
+    switch (statusFilter) {
       case "completed":
         return isCompleted && !isArchived;
       case "pending":
         return !isCompleted && !isArchived;
       case "archived":
         return isArchived;
-      case activeFilter.startsWith("label:"):
-        const labelFilter = activeFilter.replace("label:", "");
-        return todo.label === labelFilter && !isArchived;
+      case "all":
       default:
-        return !isArchived; // Show all non-archived by default
+        return true;
     }
   });
-
-  // Update local filter when sidebar filter changes
-  React.useEffect(() => {
-    if (sidebarFilter !== "all") {
-      setFilter(sidebarFilter);
-    }
-  }, [sidebarFilter]);
 
   if (isLoading) {
     return (
@@ -94,14 +101,14 @@ export default function TodoCard({ searchTerm = "", sidebarFilter = "all" }) {
           </div>
         )}
 
-        {/* Filter Buttons */}
-        <div className="flex gap-2 mb-4">
+        {/* Status Filter Buttons */}
+        <div className="flex gap-2 mb-4 flex-wrap">
           {["all", "pending", "completed", "archived"].map((filterType) => (
             <button
               key={filterType}
-              onClick={() => setFilter(filterType)}
+              onClick={() => handleStatusFilterChange(filterType)}
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                activeFilter === filterType
+                statusFilter === filterType
                   ? "bg-blue-600 text-white"
                   : "bg-gray-700 text-gray-300 hover:bg-gray-600"
               }`}
@@ -109,22 +116,43 @@ export default function TodoCard({ searchTerm = "", sidebarFilter = "all" }) {
               {filterType.charAt(0).toUpperCase() + filterType.slice(1)}
             </button>
           ))}
+          {labelFilter && (
+            <button
+              onClick={() => handleLabelFilterChange("")}
+              className="px-3 py-1 rounded-full bg-red-600 text-white text-xs"
+            >
+              Clear Label Filter
+            </button>
+          )}
         </div>
 
-        {/* Search Results Indicator */}
+        <SearchComponent />
+        
+        {/* Search Results */}
         {searchTerm && (
           <div className="mb-4 p-2 bg-blue-600/20 border border-blue-600/30 rounded-lg">
             <p className="text-sm text-blue-300">
-              Searching for "{searchTerm}" - {filteredTodos.length} result(s) found
+              Searching for "{searchTerm}" - {filteredTodos.length} result(s)
+              found
             </p>
           </div>
         )}
 
         {/* Active Filter Indicator */}
-        {sidebarFilter !== "all" && (
+        {(statusFilter !== "all" || labelFilter) && (
           <div className="mb-4 p-2 bg-indigo-600/20 border border-indigo-600/30 rounded-lg">
             <p className="text-sm text-indigo-300">
-              Filtered by: {sidebarFilter.startsWith("label:") ? `#${sidebarFilter.replace("label:", "")}` : sidebarFilter}
+              {statusFilter !== "all" && (
+                <>
+                  Status: <strong>{statusFilter}</strong>
+                  {labelFilter && " + "}
+                </>
+              )}
+              {labelFilter && (
+                <>
+                  Label: <strong>#{labelFilter}</strong>
+                </>
+              )}
             </p>
           </div>
         )}
@@ -145,14 +173,21 @@ export default function TodoCard({ searchTerm = "", sidebarFilter = "all" }) {
         <div className="space-y-3">
           {filteredTodos.length === 0 ? (
             <div className="text-center py-8 text-gray-400">
-              {filter === "all" 
-                ? "No todos yet. Create your first todo above!" 
-                : `No ${filter} todos found.`}
+              No todos found for selected filter.
             </div>
           ) : (
-            filteredTodos.map((todo) => (
-              <TodoItem key={todo._id || todo.id} todo={todo} />
-            ))
+            filteredTodos.map((todo) => {
+              const normalizedTodo = {
+                ...todo,
+                content: todo.content ?? todo.todo ?? "",
+                label: todo.label ?? "",
+                isCompleted: todo.isCompleted ?? todo.completed ?? false,
+                isArchived: todo.isArchieved ?? todo.archived ?? false,
+                _id: todo._id ?? todo.id,
+                id: todo.id ?? todo._id,
+              };
+              return <TodoItem key={normalizedTodo._id || normalizedTodo.id} todo={normalizedTodo} />;
+            })
           )}
         </div>
 
@@ -161,8 +196,9 @@ export default function TodoCard({ searchTerm = "", sidebarFilter = "all" }) {
           <div className="mt-8 p-4 bg-yellow-600/20 border border-yellow-600/30 rounded-lg">
             <h3 className="font-semibold text-yellow-300 mb-2">Guest Mode</h3>
             <p className="text-sm text-yellow-200">
-              You're using the app in guest mode. Your todos are stored locally in your browser. 
-              To sync across devices and access advanced features, please create an account.
+              You're using the app in guest mode. Your todos are stored locally
+              in your browser. To sync across devices and access advanced
+              features, please create an account.
             </p>
           </div>
         )}

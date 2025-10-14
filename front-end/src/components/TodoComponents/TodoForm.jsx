@@ -5,8 +5,9 @@ function TodoForm() {
   const [formData, setFormData] = useState({
     content: "",
     label: "General",
-    dueDate: "",
+    dueDate: "", // No default due date
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const [showLabelSuggestions, setShowLabelSuggestions] = useState(false);
   const [customLabel, setCustomLabel] = useState("");
@@ -24,7 +25,7 @@ function TodoForm() {
   const handleLabelChange = (e) => {
     const value = e.target.value;
     setCustomLabel(value);
-    
+
     if (labels.includes(value)) {
       setIsCustomLabel(false);
       setFormData({ ...formData, label: value });
@@ -40,7 +41,6 @@ function TodoForm() {
   };
 
   const handleLabelBlur = () => {
-    // Delay hiding suggestions to allow for clicks
     setTimeout(() => {
       setShowLabelSuggestions(false);
     }, 200);
@@ -53,7 +53,7 @@ function TodoForm() {
     setShowLabelSuggestions(false);
   };
 
-  const filteredLabels = labels.filter(label => 
+  const filteredLabels = labels.filter((label) =>
     label.toLowerCase().includes(customLabel.toLowerCase())
   );
 
@@ -62,29 +62,28 @@ function TodoForm() {
     if (!formData.content.trim()) return;
 
     setIsLoading(true);
-    
+
     const todoData = {
       content: formData.content.trim(),
       label: isCustomLabel ? customLabel : formData.label,
-      dueDate: formData.dueDate || null,
+      dueDate: formData.dueDate ? formData.dueDate : null, // Set to null if blank
     };
 
     const result = await addTodo(todoData);
-    
+
     if (result.success) {
       setFormData({
         content: "",
         label: "General",
-        dueDate: "",
+        dueDate: "", // Reset
       });
       setCustomLabel("");
       setIsCustomLabel(false);
     }
-    
+
     setIsLoading(false);
   };
 
-  // Initialize customLabel when formData.label changes
   useEffect(() => {
     if (!isCustomLabel) {
       setCustomLabel(formData.label);
@@ -111,7 +110,7 @@ function TodoForm() {
           {isLoading ? "Adding..." : "Add"}
         </button>
       </div>
-      
+
       <div className="flex gap-2">
         <div className="relative flex-1">
           <input
@@ -126,8 +125,7 @@ function TodoForm() {
             className="w-full px-3 py-1.5 border border-black/10 rounded-lg bg-white/20 text-sm"
             disabled={isLoading}
           />
-          
-          {/* Label Suggestions Dropdown */}
+
           {showLabelSuggestions && filteredLabels.length > 0 && (
             <div className="absolute top-full left-0 right-0 mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-10 max-h-32 overflow-y-auto">
               {filteredLabels.map((label) => (
@@ -142,15 +140,19 @@ function TodoForm() {
             </div>
           )}
         </div>
-        
-        <input
-          type="datetime-local"
-          name="dueDate"
-          value={formData.dueDate}
-          onChange={handleChange}
-          className="px-3 py-1.5 border border-black/10 rounded-lg bg-white/20 text-sm"
-          disabled={isLoading}
-        />
+
+        <div className="flex flex-col gap-1">
+          <input
+            type="date"
+            name="dueDate"
+            id="dueDate"
+            title="Due Date"
+            value={formData.dueDate}
+            onChange={handleChange}
+            className="px-3 py-1.5 border border-black/10 rounded-lg bg-white/20 text-sm"
+            disabled={isLoading}
+          />
+        </div>
       </div>
     </form>
   );

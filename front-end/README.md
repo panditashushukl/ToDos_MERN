@@ -1,12 +1,23 @@
-# React + Vite
+# Todos MERN Application - Dual Mode
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+[View Live Preview](https://to-dos-mern.vercel.app/)
 
-Currently, two official plugins are available:
+A comprehensive Todo app built with the MERN stack that supports both Guest Mode (localStorage) and Authenticated Mode (server sync). See the project structure and key files:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Backend: [back-end/package.json](back-end/package.json), app entry [back-end/src/index.js](back-end/src/index.js), constant [`DB_NAME`](back-end/src/constants.js) ([back-end/src/constants.js](back-end/src/constants.js))
+- Frontend: [front-end/package.json](front-end/package.json), entry [front-end/src/main.jsx](front-end/src/main.jsx), app [front-end/src/App.jsx](front-end/src/App.jsx)
+- Frontend API base: [`API_BASE_URL`](front-end/src/services/api.js) ([front-end/src/services/api.js](front-end/src/services/api.js))
+- Dev tooling / proxy: [front-end/vite.config.js](front-end/vite.config.js)
+- Vercel config: [front-end/vercel.json](front-end/vercel.json)
+- Components index: [front-end/src/components/index.js](front-end/src/components/index.js) and example component [`TodoCard`](front-end/src/components/TodoComponents/TodoCard.jsx) ([front-end/src/components/TodoComponents/TodoCard.jsx](front-end/src/components/TodoComponents/TodoCard.jsx))
+- Styles: [front-end/src/index.css](front-end/src/index.css)
+- Integration tests guide: [test-integration.md](test-integration.md)
+- License: [LICENSE](LICENSE)
 
-## Expanding the ESLint configuration
+Key features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- Dual-mode: Guest (localStorage) and Authenticated (server + MongoDB)
+- Full CRUD, labels, due-dates, archive, bulk ops, statistics
+- Auth: registration, login, JWT-based session handling
+- Avatar upload (Cloudinary)
+- Tailwind CSS + React 19 UI

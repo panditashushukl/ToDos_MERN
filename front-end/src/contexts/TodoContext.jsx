@@ -19,6 +19,9 @@ export const TodoContext = createContext({
   bulkUpdate: () => {},
   refreshTodos: () => {},
   isGuestMode: false,
+  searchTerm: "",
+  statusFilter: "",
+  labelFilter: "",
 });
 
 export const useTodo = () => {
@@ -32,6 +35,9 @@ export const TodoProvider = ({ children }) => {
   const [stats, setStats] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [labelFilter, setLabelFilter] = useState("");
 
   const isGuestMode = !isAuthenticated;
 
@@ -60,7 +66,7 @@ export const TodoProvider = ({ children }) => {
       setStats(statsResponse.data || null);
     } catch (err) {
       setError(err.message);
-      console.error('Failed to load server todos:', err);
+      console.error("Failed to load server todos:", err);
     } finally {
       setIsLoading(false);
     }
@@ -69,22 +75,22 @@ export const TodoProvider = ({ children }) => {
   // Load todos from localStorage (guest mode)
   const loadGuestTodos = () => {
     try {
-      const savedTodos = localStorage.getItem('guestTodos');
-      const savedLabels = localStorage.getItem('guestLabels');
-      
+      const savedTodos = localStorage.getItem("guestTodos");
+      const savedLabels = localStorage.getItem("guestLabels");
+
       if (savedTodos) {
         setTodos(JSON.parse(savedTodos));
       }
-      
+
       if (savedLabels) {
         setLabels(JSON.parse(savedLabels));
       }
 
       // Calculate stats for guest mode
-      const guestStats = calculateGuestStats(JSON.parse(savedTodos || '[]'));
+      const guestStats = calculateGuestStats(JSON.parse(savedTodos || "[]"));
       setStats(guestStats);
     } catch (err) {
-      console.error('Failed to load guest todos:', err);
+      console.error("Failed to load guest todos:", err);
       setTodos([]);
       setLabels([]);
     }
@@ -93,32 +99,37 @@ export const TodoProvider = ({ children }) => {
   // Save guest todos to localStorage
   const saveGuestTodos = (newTodos) => {
     try {
-      localStorage.setItem('guestTodos', JSON.stringify(newTodos));
-      
+      localStorage.setItem("guestTodos", JSON.stringify(newTodos));
+
       // Update labels from todos
-      const uniqueLabels = [...new Set(newTodos.map(todo => todo.label).filter(Boolean))];
+      const uniqueLabels = [
+        ...new Set(newTodos.map((todo) => todo.label).filter(Boolean)),
+      ];
       setLabels(uniqueLabels);
-      localStorage.setItem('guestLabels', JSON.stringify(uniqueLabels));
-      
+      localStorage.setItem("guestLabels", JSON.stringify(uniqueLabels));
+
       // Update stats
       const guestStats = calculateGuestStats(newTodos);
       setStats(guestStats);
     } catch (err) {
-      console.error('Failed to save guest todos:', err);
+      console.error("Failed to save guest todos:", err);
     }
   };
 
   // Calculate stats for guest mode
   const calculateGuestStats = (todos) => {
     const total = todos.length;
-    const completed = todos.filter(todo => todo.isCompleted).length;
-    const pending = todos.filter(todo => !todo.isCompleted && !todo.isArchieved).length;
-    const archived = todos.filter(todo => todo.isArchieved).length;
-    const overdue = todos.filter(todo => 
-      todo.dueDate && 
-      new Date(todo.dueDate) < new Date() && 
-      !todo.isCompleted && 
-      !todo.isArchieved
+    const completed = todos.filter((todo) => todo.isCompleted).length;
+    const pending = todos.filter(
+      (todo) => !todo.isCompleted && !todo.isArchieved
+    ).length;
+    const archived = todos.filter((todo) => todo.isArchieved).length;
+    const overdue = todos.filter(
+      (todo) =>
+        todo.dueDate &&
+        new Date(todo.dueDate) < new Date() &&
+        !todo.isCompleted &&
+        !todo.isArchieved
     ).length;
 
     return {
@@ -137,14 +148,14 @@ export const TodoProvider = ({ children }) => {
       const newTodo = {
         id: Date.now().toString(),
         content: todoData.content || todoData.todo,
-        label: todoData.label || 'General',
+        label: todoData.label || "General",
         isCompleted: false,
         isArchieved: false,
         dueDate: todoData.dueDate || null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       };
-      
+
       const newTodos = [newTodo, ...todos];
       setTodos(newTodos);
       saveGuestTodos(newTodos);
@@ -153,11 +164,11 @@ export const TodoProvider = ({ children }) => {
       try {
         const response = await apiService.createTodo(todoData);
         const newTodo = response.data;
-        
-        setTodos(prev => [newTodo, ...prev]);
+
+        setTodos((prev) => [newTodo, ...prev]);
         await refreshLabels();
         await refreshStats();
-        
+
         return { success: true, todo: newTodo };
       } catch (err) {
         setError(err.message);
@@ -171,8 +182,10 @@ export const TodoProvider = ({ children }) => {
   // Update todo
   const updateTodo = async (id, todoData) => {
     if (isGuestMode) {
-      const newTodos = todos.map(todo => 
-        todo.id === id ? { ...todo, ...todoData, updatedAt: new Date().toISOString() } : todo
+      const newTodos = todos.map((todo) =>
+        todo.id === id
+          ? { ...todo, ...todoData, updatedAt: new Date().toISOString() }
+          : todo
       );
       setTodos(newTodos);
       saveGuestTodos(newTodos);
@@ -181,10 +194,10 @@ export const TodoProvider = ({ children }) => {
       try {
         const response = await apiService.updateTodo(id, todoData);
         const updatedTodo = response.data;
-        
-        setTodos(prev => prev.map(todo => 
-          todo._id === id ? updatedTodo : todo
-        ));
+
+        setTodos((prev) =>
+          prev.map((todo) => (todo._id === id ? updatedTodo : todo))
+        );
 
         await refreshStats();
 
@@ -201,17 +214,17 @@ export const TodoProvider = ({ children }) => {
   // Delete todo
   const deleteTodo = async (id) => {
     if (isGuestMode) {
-      const newTodos = todos.filter(todo => todo.id !== id);
+      const newTodos = todos.filter((todo) => todo.id !== id);
       setTodos(newTodos);
       saveGuestTodos(newTodos);
       return { success: true };
     } else {
       try {
         await apiService.deleteTodo(id);
-        
-        setTodos(prev => prev.filter(todo => todo._id !== id));
+
+        setTodos((prev) => prev.filter((todo) => todo._id !== id));
         await refreshStats();
-        
+
         return { success: true };
       } catch (err) {
         setError(err.message);
@@ -225,8 +238,14 @@ export const TodoProvider = ({ children }) => {
   // Toggle completion
   const toggleCompleted = async (id) => {
     if (isGuestMode) {
-      const newTodos = todos.map(todo => 
-        todo.id === id ? { ...todo, isCompleted: !todo.isCompleted, updatedAt: new Date().toISOString() } : todo
+      const newTodos = todos.map((todo) =>
+        todo.id === id
+          ? {
+              ...todo,
+              isCompleted: !todo.isCompleted,
+              updatedAt: new Date().toISOString(),
+            }
+          : todo
       );
       setTodos(newTodos);
       saveGuestTodos(newTodos);
@@ -235,13 +254,13 @@ export const TodoProvider = ({ children }) => {
       try {
         const response = await apiService.toggleTodoCompletion(id);
         const updatedTodo = response.data;
-        
-        setTodos(prev => prev.map(todo => 
-          todo._id === id ? updatedTodo : todo
-        ));
+
+        setTodos((prev) =>
+          prev.map((todo) => (todo._id === id ? updatedTodo : todo))
+        );
 
         await refreshStats();
-        
+
         return { success: true, todo: updatedTodo };
       } catch (err) {
         setError(err.message);
@@ -255,8 +274,14 @@ export const TodoProvider = ({ children }) => {
   // Toggle archive
   const toggleArchived = async (id) => {
     if (isGuestMode) {
-      const newTodos = todos.map(todo => 
-        todo.id === id ? { ...todo, isArchieved: !todo.isArchieved, updatedAt: new Date().toISOString() } : todo
+      const newTodos = todos.map((todo) =>
+        todo.id === id
+          ? {
+              ...todo,
+              isArchieved: !todo.isArchieved,
+              updatedAt: new Date().toISOString(),
+            }
+          : todo
       );
       setTodos(newTodos);
       saveGuestTodos(newTodos);
@@ -265,13 +290,13 @@ export const TodoProvider = ({ children }) => {
       try {
         const response = await apiService.toggleTodoArchive(id);
         const updatedTodo = response.data;
-        
-        setTodos(prev => prev.map(todo => 
-          todo._id === id ? updatedTodo : todo
-        ));
-        
+
+        setTodos((prev) =>
+          prev.map((todo) => (todo._id === id ? updatedTodo : todo))
+        );
+
         await refreshStats();
-        
+
         return { success: true, todo: updatedTodo };
       } catch (err) {
         setError(err.message);
@@ -285,7 +310,7 @@ export const TodoProvider = ({ children }) => {
   // Get todos by label
   const getTodosByLabel = async (label) => {
     if (isGuestMode) {
-      return todos.filter(todo => todo.label === label);
+      return todos.filter((todo) => todo.label === label);
     } else {
       try {
         const response = await apiService.getTodosByLabel(label);
@@ -300,8 +325,10 @@ export const TodoProvider = ({ children }) => {
   // Update label
   const updateLabel = async (oldLabel, newLabel) => {
     if (isGuestMode) {
-      const newTodos = todos.map(todo => 
-        todo.label === oldLabel ? { ...todo, label: newLabel, updatedAt: new Date().toISOString() } : todo
+      const newTodos = todos.map((todo) =>
+        todo.label === oldLabel
+          ? { ...todo, label: newLabel, updatedAt: new Date().toISOString() }
+          : todo
       );
       setTodos(newTodos);
       saveGuestTodos(newTodos);
@@ -309,7 +336,7 @@ export const TodoProvider = ({ children }) => {
     } else {
       try {
         await apiService.updateLabel(oldLabel, newLabel);
-        await loadServerTodos(); 
+        await loadServerTodos();
         return { success: true };
       } catch (err) {
         setError(err.message);
@@ -323,14 +350,14 @@ export const TodoProvider = ({ children }) => {
   // Delete label
   const deleteLabel = async (label) => {
     if (isGuestMode) {
-      const newTodos = todos.filter(todo => todo.label !== label);
+      const newTodos = todos.filter((todo) => todo.label !== label);
       setTodos(newTodos);
       saveGuestTodos(newTodos);
       return { success: true };
     } else {
       try {
         await apiService.deleteLabel(label);
-        await loadServerTodos(); 
+        await loadServerTodos();
         await refreshStats();
         return { success: true };
       } catch (err) {
@@ -346,33 +373,57 @@ export const TodoProvider = ({ children }) => {
   const bulkUpdate = async (todoIds, operation) => {
     if (isGuestMode) {
       let newTodos = [...todos];
-      
+
       switch (operation) {
-        case 'markCompleted':
-          newTodos = newTodos.map(todo => 
-            todoIds.includes(todo.id) ? { ...todo, isCompleted: true, updatedAt: new Date().toISOString() } : todo
+        case "markCompleted":
+          newTodos = newTodos.map((todo) =>
+            todoIds.includes(todo.id)
+              ? {
+                  ...todo,
+                  isCompleted: true,
+                  updatedAt: new Date().toISOString(),
+                }
+              : todo
           );
           break;
-        case 'markPending':
-          newTodos = newTodos.map(todo => 
-            todoIds.includes(todo.id) ? { ...todo, isCompleted: false, updatedAt: new Date().toISOString() } : todo
+        case "markPending":
+          newTodos = newTodos.map((todo) =>
+            todoIds.includes(todo.id)
+              ? {
+                  ...todo,
+                  isCompleted: false,
+                  updatedAt: new Date().toISOString(),
+                }
+              : todo
           );
           break;
-        case 'archive':
-          newTodos = newTodos.map(todo => 
-            todoIds.includes(todo.id) ? { ...todo, isArchieved: true, updatedAt: new Date().toISOString() } : todo
+        case "archive":
+          newTodos = newTodos.map((todo) =>
+            todoIds.includes(todo.id)
+              ? {
+                  ...todo,
+                  isArchieved: true,
+                  updatedAt: new Date().toISOString(),
+                }
+              : todo
           );
           break;
-        case 'unarchive':
-          newTodos = newTodos.map(todo => 
-            todoIds.includes(todo.id) ? { ...todo, isArchieved: false, updatedAt: new Date().toISOString() } : todo
+        case "unarchive":
+          newTodos = newTodos.map((todo) =>
+            todoIds.includes(todo.id)
+              ? {
+                  ...todo,
+                  isArchieved: false,
+                  updatedAt: new Date().toISOString(),
+                }
+              : todo
           );
           break;
-        case 'delete':
-          newTodos = newTodos.filter(todo => !todoIds.includes(todo.id));
+        case "delete":
+          newTodos = newTodos.filter((todo) => !todoIds.includes(todo.id));
           break;
       }
-      
+
       setTodos(newTodos);
       saveGuestTodos(newTodos);
       return { success: true };
@@ -407,7 +458,7 @@ export const TodoProvider = ({ children }) => {
         const response = await apiService.getLabels();
         setLabels(response.data || []);
       } catch (err) {
-        console.error('Failed to refresh labels:', err);
+        console.error("Failed to refresh labels:", err);
       }
     }
   };
@@ -419,9 +470,23 @@ export const TodoProvider = ({ children }) => {
         const response = await apiService.getTodoStats();
         setStats(response.data || null);
       } catch (err) {
-        console.error('Failed to refresh stats:', err);
+        console.error("Failed to refresh stats:", err);
       }
     }
+  };
+
+  // Search Facility
+  const handleSearchChange = (search) => {
+    setSearchTerm(search);
+  };
+
+  // Filter Facility
+const handleStatusFilterChange = (filter) => {
+  setStatusFilter(filter);
+};
+
+  const handleLabelFilterChange = (label) => {
+    setLabelFilter(label); 
   };
 
   const value = {
@@ -441,11 +506,13 @@ export const TodoProvider = ({ children }) => {
     bulkUpdate,
     refreshTodos,
     isGuestMode,
+    handleSearchChange,
+    searchTerm,
+    handleStatusFilterChange,
+    statusFilter,
+    handleLabelFilterChange,
+    labelFilter,
   };
 
-  return (
-    <TodoContext.Provider value={value}>
-      {children}
-    </TodoContext.Provider>
-  );
-}; 
+  return <TodoContext.Provider value={value}>{children}</TodoContext.Provider>;
+};
