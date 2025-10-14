@@ -12,7 +12,7 @@ import SocialLinksCard from "./social/SocialLinksCard"
 import SocialCard from "./social/SocialCard"
 import NavCard from "./nav/NavCard"
 import NavCardItem from "./nav/NavCardItem"
-import LabelCard from "./label/labelCard"
+import LabelCard from "./label/LabelCard"
 import NotificationCard from "./notification/NotificationCard"
 import SearchComponent from "./search/SearchComponent"
 

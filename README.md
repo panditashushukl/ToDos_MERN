@@ -1,14 +1,18 @@
 # Todos MERN Application - Dual Mode
 
+[View Live Preview](https://to-dos-mern.vercel.app/)
+
 A comprehensive Todo application built with MERN stack that supports both **Guest Mode** (local storage) and **Authenticated Mode** (server-based) functionality.
 
 ## Features
 
 ### 🎯 Dual Mode Architecture
+
 - **Guest Mode**: Full functionality using localStorage
 - **Authenticated Mode**: Full server integration with cloud sync
 
 ### 📝 Todo Management
+
 - Create, read, update, delete todos
 - Mark todos as completed/pending
 - Archive/unarchive todos
@@ -18,6 +22,7 @@ A comprehensive Todo application built with MERN stack that supports both **Gues
 - Statistics dashboard
 
 ### 🔐 Authentication
+
 - User registration with avatar upload
 - Secure login/logout
 - JWT token-based authentication
@@ -25,6 +30,7 @@ A comprehensive Todo application built with MERN stack that supports both **Gues
 - Profile management
 
 ### 🎨 User Interface
+
 - Modern, responsive design
 - Dark theme
 - Real-time updates
@@ -35,6 +41,7 @@ A comprehensive Todo application built with MERN stack that supports both **Gues
 ## Technology Stack
 
 ### Backend
+
 - **Node.js** with Express.js
 - **MongoDB** with Mongoose
 - **JWT** for authentication
@@ -43,6 +50,7 @@ A comprehensive Todo application built with MERN stack that supports both **Gues
 - **Multer** for file handling
 
 ### Frontend
+
 - **React 19** with hooks
 - **Tailwind CSS** for styling
 - **Context API** for state management
@@ -51,7 +59,7 @@ A comprehensive Todo application built with MERN stack that supports both **Gues
 
 ## Project Structure
 
-```
+```txt
 TodosMERN/
 ├── back-end/
 │   ├── src/
@@ -78,6 +86,7 @@ TodosMERN/
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js (v16 or higher)
 - MongoDB
 - Cloudinary account (for image uploads)
@@ -85,16 +94,19 @@ TodosMERN/
 ### Backend Setup
 
 1. Navigate to the backend directory:
+
 ```bash
 cd back-end
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Create a `.env` file with the following variables:
+
 ```env
 MONGODB_URI=mongodb://localhost:27017/todosmern
 JWT_SECRET=your_jwt_secret
@@ -109,6 +121,7 @@ CORS_ORIGIN=http://localhost:5173
 ```
 
 4. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -116,16 +129,19 @@ npm run dev
 ### Frontend Setup
 
 1. Navigate to the frontend directory:
+
 ```bash
 cd front-end
 ```
 
 2. Install dependencies:
+
 ```bash
 npm install
 ```
 
 3. Start the development server:
+
 ```bash
 npm run dev
 ```
@@ -133,6 +149,7 @@ npm run dev
 ## Usage
 
 ### Guest Mode
+
 - Access the application without creating an account
 - All todos are stored locally in your browser
 - Full CRUD operations available
@@ -140,6 +157,7 @@ npm run dev
 - No cloud sync or cross-device access
 
 ### Authenticated Mode
+
 - Register a new account or login with existing credentials
 - All todos are synced with the server
 - Access your todos from any device
@@ -149,6 +167,7 @@ npm run dev
 ## API Endpoints
 
 ### Authentication
+
 - `POST /api/v1/users/register` - User registration
 - `POST /api/v1/users/login` - User login
 - `POST /api/v1/users/logout` - User logout
@@ -158,6 +177,7 @@ npm run dev
 - `PATCH /api/v1/users/avatar` - Update avatar
 
 ### Todos (Authenticated)
+
 - `GET /api/v1/todos/user/todos` - Get user todos
 - `POST /api/v1/todos` - Create todo
 - `GET /api/v1/todos/:todoId` - Get specific todo
@@ -170,11 +190,13 @@ npm run dev
 - `PATCH /api/v1/todos/bulk` - Bulk operations
 
 ### Guest
+
 - `GET /api/v1/guest/info` - Get guest mode information
 
 ## Key Features
 
 ### Dual Mode Context
+
 The application uses a sophisticated context system that automatically switches between guest and authenticated modes:
 
 - **AuthContext**: Manages user authentication state
@@ -182,10 +204,12 @@ The application uses a sophisticated context system that automatically switches 
 - **API Service**: Manages server communication
 
 ### Data Persistence
+
 - **Guest Mode**: localStorage with automatic sync
 - **Authenticated Mode**: MongoDB with real-time updates
 
 ### Security
+
 - JWT-based authentication
 - Password hashing with bcrypt
 - Secure cookie handling
@@ -194,11 +218,13 @@ The application uses a sophisticated context system that automatically switches 
 ## Development
 
 ### Adding New Features
+
 1. Backend: Add routes, controllers, and models
 2. Frontend: Update contexts and components
 3. Ensure both guest and authenticated modes work
 
 ### Testing
+
 - Test both guest and authenticated modes
 - Verify data persistence
 - Check error handling
@@ -219,6 +245,7 @@ This project is licensed under the ISC License.
 ## Author
 
 **Ashutosh Shukla**
+
 - GitHub: [@panditashushukl](https://github.com/panditashushukl)
 - Twitter: [@panditashushukl](https://twitter.com/panditashushukl)
 - LinkedIn: [panditashushukl](https://linkedin.com/in/panditashushukl)
