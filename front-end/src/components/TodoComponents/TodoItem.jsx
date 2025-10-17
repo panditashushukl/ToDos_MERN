@@ -64,48 +64,59 @@ function TodoItem({ todo }) {
 
   return (
     <div
-      className={`border border-black/10 rounded-lg px-3 py-2 gap-x-3 shadow-sm shadow-white/50 duration-300 text-black ${
+      className={`rounded-lg px-4 py-3 transition-all duration-300 shadow-md border ${
         isCompleted
-          ? "bg-green-200"
+          ? "bg-green-900/30 border-green-600"
           : isArchived
-          ? "bg-gray-300"
-          : "bg-purple-200"
-      } ${isOverdue ? "border-red-500" : ""}`}
+          ? "bg-gray-700/40 border-gray-600"
+          : "bg-purple-900/30 border-purple-700"
+      } ${isOverdue ? "border-red-500" : "border-white/10"}`}
     >
-      <div className="flex items-center gap-x-3">
+      <div className="flex items-start md:items-center gap-x-3">
+        {/* Checkbox */}
         <input
           type="checkbox"
-          className="cursor-pointer"
+          className="mt-1 md:mt-0 w-5 h-5 text-green-500 accent-green-600 cursor-pointer"
           checked={isCompleted}
           onChange={handleToggleComplete}
           disabled={isLoading}
         />
 
+        {/* Content */}
         <div className="flex-1">
           <input
             type="text"
-            className={`border outline-none w-full bg-transparent rounded-lg ${
-              isTodoEditable ? "border-black/10 px-2" : "border-transparent"
-            } ${isCompleted ? "line-through" : ""}`}
+            className={`w-full bg-transparent text-white placeholder-gray-400 outline-none border rounded-md transition ${
+              isTodoEditable
+                ? "border-white/20 px-2 py-1"
+                : "border-transparent"
+            } ${isCompleted ? "line-through text-gray-400" : ""}`}
             value={todoContent}
             onChange={(e) => setTodoContent(e.target.value)}
             readOnly={!isTodoEditable || isArchived}
             disabled={isLoading}
           />
 
-          <div className="flex items-center gap-2 mt-1 text-xs text-gray-600">
-            <span className="bg-blue-100 px-2 py-1 rounded-full">{label}</span>
+          {/* Tags: Label, Due Date, Archived */}
+          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
+            {label && (
+              <span className="bg-blue-700/40 text-blue-300 px-2 py-1 rounded-full">
+                #{label}
+              </span>
+            )}
             {todo.dueDate && (
               <span
                 className={`px-2 py-1 rounded-full ${
-                  isOverdue ? "bg-red-100 text-red-800" : "bg-gray-100"
+                  isOverdue
+                    ? "bg-red-700/40 text-red-300"
+                    : "bg-gray-600/40 text-gray-300"
                 }`}
               >
                 Due: {formatDate(todo.dueDate)}
               </span>
             )}
             {isArchived && (
-              <span className="bg-yellow-100 px-2 py-1 rounded-full">
+              <span className="bg-yellow-700/40 text-yellow-300 px-2 py-1 rounded-full">
                 Archived
               </span>
             )}
@@ -113,10 +124,10 @@ function TodoItem({ todo }) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex gap-1">
-          {/* Edit/Save Button */}
+        <div className="flex gap-2 mt-3 md:mt-0">
+          {/* Edit/Save */}
           <button
-            className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 shrink-0 disabled:opacity-50"
+            className="w-8 h-8 flex items-center justify-center rounded-md bg-gray-700 hover:bg-gray-600 text-white transition disabled:opacity-50"
             onClick={() => {
               if (isCompleted || isArchived) return;
               isTodoEditable ? editTodo() : setIsTodoEditable(true);
@@ -127,9 +138,9 @@ function TodoItem({ todo }) {
             {isTodoEditable ? "💾" : "✏️"}
           </button>
 
-          {/* Archive/Unarchive Button */}
+          {/* Archive/Unarchive */}
           <button
-            className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 shrink-0 disabled:opacity-50"
+            className="w-8 h-8 flex items-center justify-center rounded-md bg-gray-700 hover:bg-gray-600 text-white transition disabled:opacity-50"
             onClick={handleToggleArchive}
             disabled={isLoading}
             title={isArchived ? "Unarchive" : "Archive"}
@@ -137,9 +148,9 @@ function TodoItem({ todo }) {
             {isArchived ? "📤" : "📦"}
           </button>
 
-          {/* Delete Button */}
+          {/* Delete */}
           <button
-            className="inline-flex w-8 h-8 rounded-lg text-sm border border-black/10 justify-center items-center bg-gray-50 hover:bg-gray-100 shrink-0 disabled:opacity-50"
+            className="w-8 h-8 flex items-center justify-center rounded-md bg-red-700 hover:bg-red-600 text-white transition disabled:opacity-50"
             onClick={handleDelete}
             disabled={isLoading}
             title="Delete"

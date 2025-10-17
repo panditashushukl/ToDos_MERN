@@ -8,8 +8,8 @@ const AuthModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="relative">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="relative w-full max-w-fit">
         {isLogin ? (
           <LoginForm
             onSwitchToRegister={() => setIsLogin(false)}

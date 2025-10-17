@@ -44,7 +44,7 @@ class ApiService {
   }
 
   async updateProfile(data) {
-    return this.request('/users/update-account', {
+    return this.request('/users/update-details', {
       method: 'PATCH',
       body: JSON.stringify(data),
     });

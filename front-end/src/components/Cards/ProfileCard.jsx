@@ -1,5 +1,6 @@
 import { useAuth } from "../../contexts/AuthContext";
 import { FaEdit, FaSignOutAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const ProfileCard = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -47,11 +48,6 @@ const ProfileCard = () => {
     return "@guest";
   };
 
-  const handleEdit = () => {
-    // TODO: Add your edit logic here
-    console.log("Edit clicked");
-  };
-
   const handleLogout = () => {
     logout();
   };
@@ -65,15 +61,15 @@ const ProfileCard = () => {
       {/* Bottom buttons */}
       {isAuthenticated && user && (
         <>
-          <div
+          <Link
             className="absolute bottom-2 left-4 group cursor-pointer"
-            onClick={handleEdit}
+            to="/edit-profile"
           >
             <FaEdit className="text-indigo-400 hover:text-indigo-200 text-lg" />
             <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap">
               Edit Profile
             </div>
-          </div>
+          </Link>
 
           <div
             className="absolute bottom-2 right-4 group cursor-pointer"

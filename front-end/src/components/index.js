@@ -15,6 +15,13 @@ import NavCardItem from "./nav/NavCardItem"
 import LabelCard from "./label/LabelCard"
 import NotificationCard from "./notification/NotificationCard"
 import SearchComponent from "./search/SearchComponent"
+import ProfileEditCard from "./ProfileEditCard"
+import ProtectedRoute from "./ProtectedRoute"
+import BlueButton from "./button/BlueButton"
+import InputField from "./input/InputFeild"
+import PhotoCropper from "./photo/PhotoCropper"
+import EditPhoto from "./photo/EditPhoto"
+import PhotoInput from "./search/PhotoInput"
 
 export {
   Header, 
@@ -34,4 +41,11 @@ export {
   LabelCard,
   NotificationCard,
   SearchComponent,
+  ProfileEditCard,
+  ProtectedRoute,
+  BlueButton,
+  InputField,
+  PhotoCropper,
+  EditPhoto,
+  PhotoInput,
 }

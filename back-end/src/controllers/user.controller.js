@@ -61,10 +61,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
   let avatar;
   if (avatarLocalPath) {
-    console.log(avatarLocalPath);
     
     avatar = await uploadOnCloudinary(avatarLocalPath);
-    console.log(avatar);
     
     if (!avatar) {
       throw new ApiError(500, "Something went wrong while uploading Avatar");
@@ -247,7 +245,6 @@ const updateAccountDetails = asyncHandler(async (req, res) => {
 
 const updateUserAvatar = asyncHandler(async (req, res) => {
   const avatarLocalPath = req.file?.path;
-
   if (!avatarLocalPath) {
     throw new ApiError(400, "Avatar file is missing");
   }

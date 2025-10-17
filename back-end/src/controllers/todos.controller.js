@@ -323,13 +323,11 @@ const getTodoStats = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
   const [
-    totalTodos,
     completedTodos,
     pendingTodos,
     archivedTodos,
     overdueTodos,
   ] = await Promise.all([
-    Todo.countDocuments({ owner: userId }),
     Todo.countDocuments({
       owner: userId,
       isCompleted: true,
@@ -349,6 +347,8 @@ const getTodoStats = asyncHandler(async (req, res) => {
     }),
   ]);
 
+  const totalTodos = completedTodos + pendingTodos
+
   const stats = {
     total: totalTodos,
     completed: completedTodos,
@@ -356,7 +356,7 @@ const getTodoStats = asyncHandler(async (req, res) => {
     archived: archivedTodos,
     overdue: overdueTodos,
     completionRate:
-      totalTodos > 0 ? Math.round((completedTodos / totalTodos) * 100) : 0,
+      totalTodos > 0 ? Math.round((completedTodos / (completedTodos + pendingTodos)) * 100) : 0,
   };
 
   return res

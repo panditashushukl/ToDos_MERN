@@ -36,7 +36,7 @@ export const TodoProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("pending");
   const [labelFilter, setLabelFilter] = useState("");
 
   const isGuestMode = !isAuthenticated;

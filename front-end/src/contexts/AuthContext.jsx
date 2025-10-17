@@ -71,7 +71,7 @@ export const AuthProvider = ({ children }) => {
 
       if (response.ok) {
         const { user: userData, accessToken, refreshToken } = data?.data || {};
-
+        
         // Store tokens
         localStorage.setItem("accessToken", accessToken);
         localStorage.setItem("refreshToken", refreshToken);
@@ -110,7 +110,8 @@ export const AuthProvider = ({ children }) => {
       if (avatar) {
         formData.append("avatar", avatar);
       }
-
+      console.log({formData,fullName,username, password, avatar});
+      
       const response = await fetch("/api/v1/users/register", {
         method: "POST",
         body: formData,
@@ -184,6 +185,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUser = (newData) => {
+    setUser((prev) => ({ ...prev, ...newData }));
+  };
+
   const value = {
     user,
     isAuthenticated,
@@ -192,6 +197,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     refreshToken,
+    updateUser
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

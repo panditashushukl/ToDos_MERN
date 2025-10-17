@@ -10,7 +10,7 @@ export default function Sidebar({
     <aside
       className={`fixed top-0 left-0 h-full bg-gray-900 text-white w-72 p-6 flex flex-col justify-between transform transition-transform duration-300 ease-in-out
       ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
-      style={{ zIndex: 1000 }}
+      style={{ zIndex: 10 }}
       aria-label="Sidebar Navigation"
     >
       {/* Close button */}
