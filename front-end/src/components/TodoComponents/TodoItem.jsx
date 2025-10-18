@@ -1,47 +1,33 @@
 import { useState } from "react";
-import { useTodo } from "../../contexts/TodoContext";
+import { useTodo } from "./../../contexts/TodoContext";
 
-function TodoItem({ todo }) {
+function TodoItem({ todo, onEdit }) {
   const todoId = todo.id ?? todo._id;
   const isCompleted = todo.completed ?? todo.isCompleted ?? false;
   const isArchived = todo.archived ?? todo.isArchieved ?? false;
   const label = todo.label || "General";
   const content = todo.content ?? todo.todo ?? "";
 
-  const [isTodoEditable, setIsTodoEditable] = useState(false);
-  const [todoContent, setTodoContent] = useState(content);
   const [isLoading, setIsLoading] = useState(false);
 
-  const { updateTodo, deleteTodo, toggleCompleted, toggleArchived } = useTodo();
-
-  const editTodo = async () => {
-    if (!todoContent.trim()) return;
-
-    setIsLoading(true);
-    const result = updateTodo(todoId, { content: todoContent.trim() });
-
-    if (result.success) {
-      setIsTodoEditable(false);
-    }
-    setIsLoading(false);
-  };
+  const { deleteTodo, toggleCompleted, toggleArchived } = useTodo();
 
   const handleToggleComplete = async () => {
     setIsLoading(true);
-    toggleCompleted(todoId);
+    await toggleCompleted(todoId);
     setIsLoading(false);
   };
 
   const handleToggleArchive = async () => {
     setIsLoading(true);
-    toggleArchived(todoId);
+    await toggleArchived(todoId);
     setIsLoading(false);
   };
 
   const handleDelete = async () => {
     if (window.confirm("Are you sure you want to delete this todo?")) {
       setIsLoading(true);
-      deleteTodo(todoId);
+      await deleteTodo(todoId);
       setIsLoading(false);
     }
   };
@@ -84,18 +70,13 @@ function TodoItem({ todo }) {
 
         {/* Content */}
         <div className="flex-1">
-          <input
-            type="text"
-            className={`w-full bg-transparent text-white placeholder-gray-400 outline-none border rounded-md transition ${
-              isTodoEditable
-                ? "border-white/20 px-2 py-1"
-                : "border-transparent"
-            } ${isCompleted ? "line-through text-gray-400" : ""}`}
-            value={todoContent}
-            onChange={(e) => setTodoContent(e.target.value)}
-            readOnly={!isTodoEditable || isArchived}
-            disabled={isLoading}
-          />
+          <p
+            className={`text-white ${
+              isCompleted ? "line-through text-gray-400" : ""
+            }`}
+          >
+            {content}
+          </p>
 
           {/* Tags: Label, Due Date, Archived */}
           <div className="flex flex-wrap items-center gap-2 mt-2 text-xs">
@@ -125,17 +106,14 @@ function TodoItem({ todo }) {
 
         {/* Action Buttons */}
         <div className="flex gap-2 mt-3 md:mt-0">
-          {/* Edit/Save */}
+          {/* Edit */}
           <button
-            className="w-8 h-8 flex items-center justify-center rounded-md bg-gray-700 hover:bg-gray-600 text-white transition disabled:opacity-50"
-            onClick={() => {
-              if (isCompleted || isArchived) return;
-              isTodoEditable ? editTodo() : setIsTodoEditable(true);
-            }}
+            className="w-8 h-8 flex items-center justify-center rounded-md bg-blue-700 hover:bg-blue-600 text-white transition disabled:opacity-50"
+            onClick={() => onEdit(todo)}
             disabled={isCompleted || isArchived || isLoading}
-            title={isTodoEditable ? "Save" : "Edit"}
+            title="Edit"
           >
-            {isTodoEditable ? "💾" : "✏️"}
+            ✏️
           </button>
 
           {/* Archive/Unarchive */}

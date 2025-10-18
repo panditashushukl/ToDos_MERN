@@ -45,7 +45,6 @@ const RegisterForm = ({ onSwitchToLogin, onClose }) => {
     e.preventDefault();
 
     if (!validateForm()) {
-      console.log("Form validation failed");
       return;
     }
 
@@ -72,8 +71,6 @@ const RegisterForm = ({ onSwitchToLogin, onClose }) => {
         formData.password,
         avatarFile
       );
-
-      console.log("Register result:", result);
 
       if (result && result.success) {
         onClose?.();

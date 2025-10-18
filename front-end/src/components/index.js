@@ -21,7 +21,8 @@ import BlueButton from "./button/BlueButton"
 import InputField from "./input/InputFeild"
 import PhotoCropper from "./photo/PhotoCropper"
 import EditPhoto from "./photo/EditPhoto"
-import PhotoInput from "./search/PhotoInput"
+import PhotoInput from "./photo/PhotoInput"
+import LoadingCard from "./loading/LoadingCard"
 
 export {
   Header, 
@@ -48,4 +49,5 @@ export {
   PhotoCropper,
   EditPhoto,
   PhotoInput,
+  LoadingCard,
 }

@@ -1,6 +1,7 @@
+import { useState  } from "react";
 import { useTodo } from "./../../contexts/TodoContext";
 import { useAuth } from "./../../contexts/AuthContext";
-import { SearchComponent, TodoForm, TodoItem } from "./../index";
+import { SearchComponent, TodoForm, TodoItem, LoadingCard } from "./../index";
 
 export default function TodoCard() {
   const {
@@ -17,6 +18,7 @@ export default function TodoCard() {
   } = useTodo();
 
   const { isAuthenticated } = useAuth();
+  const [editingTodo, setEditingTodo] = useState(null)
 
   const filteredTodos = todos.filter((todo) => {
     const isCompleted = todo.isCompleted || todo.completed;
@@ -55,11 +57,13 @@ export default function TodoCard() {
 
   if (isLoading) {
     return (
-      <div className="bg-[#0e1525] min-h-screen flex items-center justify-center">
-        <div className="text-white text-xl font-semibold animate-pulse">
-          Loading todos...
+      <LoadingCard>
+        <div className="space-y-3">
+          <div className="h-4 bg-white/10 rounded w-3/4 animate-pulse" />
+          <div className="h-4 bg-white/10 rounded w-2/3 animate-pulse" />
+          <div className="h-4 bg-white/10 rounded w-1/2 animate-pulse" />
         </div>
-      </div>
+      </LoadingCard>
     );
   }
 
@@ -80,40 +84,57 @@ export default function TodoCard() {
 
         {/* Stats Display */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
             {[
-              { label: "Total", value: stats.total, color: "bg-blue-600" },
+              {
+                label: "Total",
+                value: stats.total,
+                color: "border-blue-500",
+                text: "text-blue-500",
+              },
               {
                 label: "Completed",
                 value: stats.completed,
-                color: "bg-green-600",
+                color: "border-green-500",
+                text: "text-green-500",
               },
               {
                 label: "Pending",
                 value: stats.pending,
-                color: "bg-orange-500",
+                color: "border-orange-400",
+                text: "text-orange-400",
               },
               {
                 label: "Archived",
                 value: stats.archived,
-                color: "bg-gray-500",
+                color: "border-gray-400",
+                text: "text-gray-400",
               },
               {
                 label: "Complete",
                 value: `${stats.completionRate}%`,
-                color: "bg-purple-600",
+                color: "border-purple-500",
+                text: "text-purple-500",
               },
-            ].map(({ label, value, color }) => (
+            ].map(({ label, value, color, text }) => (
               <div
                 key={label}
-                className={`${color} p-4 rounded-lg text-center shadow-md`}
+                className={`border ${color} rounded-lg p-4 text-center shadow-sm hover:shadow-md transition-all duration-200 bg-white/5 backdrop-blur-md`}
               >
-                <div className="text-2xl font-bold">{value}</div>
-                <div className="text-sm opacity-80">{label}</div>
+                <div className={`text-2xl font-semibold ${text}`}>{value}</div>
+                <div className="text-sm text-white/70 mt-1">{label}</div>
               </div>
             ))}
           </div>
         )}
+
+        {/* Todo Form */}
+        <div className="mb-8">
+          <TodoForm 
+            editingTodo={editingTodo}
+            onSave={() => setEditingTodo(null)}
+          />
+        </div>
 
         {/* Status Filter Buttons */}
         <div className="flex flex-wrap gap-2 mb-6">
@@ -180,11 +201,6 @@ export default function TodoCard() {
           </div>
         )}
 
-        {/* Todo Form */}
-        <div className="mb-8">
-          <TodoForm />
-        </div>
-
         {/* Todo List */}
         <div className="space-y-4">
           {filteredTodos.length === 0 ? (
@@ -206,6 +222,7 @@ export default function TodoCard() {
                 <TodoItem
                   key={normalizedTodo._id || normalizedTodo.id}
                   todo={normalizedTodo}
+                  onEdit = {()=> setEditingTodo(normalizedTodo)}
                 />
               );
             })

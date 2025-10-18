@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { PhotoInput, BlueButton } from "./index";
-import { apiService } from "./../services/api"; 
+import { PhotoInput, BlueButton, InputField } from "./index";
+import { apiService } from "./../services/api";
 import { useAuth } from "./../contexts/AuthContext";
 
 export default function ProfileEditCard() {
@@ -46,7 +46,9 @@ export default function ProfileEditCard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-6 text-white">
       <div className="bg-gray-800 shadow-xl rounded-xl p-8 max-w-md w-full space-y-8 border border-gray-700">
-        <h2 className="text-3xl font-bold text-white text-center">Edit Profile</h2>
+        <h2 className="text-3xl font-bold text-white text-center">
+          Edit Profile
+        </h2>
 
         {/* Edit Name Toggle */}
         <div className="flex items-center justify-between">
@@ -66,16 +68,15 @@ export default function ProfileEditCard() {
         </div>
 
         {editName && (
-          <input
+          <InputField
             type="text"
-            placeholder="Enter your full name"
+            placeholder="Enter your new Name"
+            label="Enter new Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2 bg-gray-700 border border-gray-600 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
           />
         )}
 
-        {/* Edit Photo Toggle */}
         <div className="flex items-center justify-between">
           <span className="text-lg text-gray-200">Edit Profile Photo?</span>
           <div
@@ -103,7 +104,11 @@ export default function ProfileEditCard() {
 
         {/* Submit Button */}
         {canSubmit && (
-          <BlueButton onClick={handleSubmit} disabled={loading} className="w-full mt-4">
+          <BlueButton
+            onClick={handleSubmit}
+            disabled={loading}
+            className="w-full mt-4"
+          >
             {loading ? "Submitting..." : "Submit Changes"}
           </BlueButton>
         )}

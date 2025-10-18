@@ -45,13 +45,11 @@ app.use(cookieParser());
 import healthcheckRouter from "./routes/healthcheck.routes.js";
 import userRouter from "./routes/user.routes.js";
 import todosRouter from "./routes/todos.routes.js";
-import guestRouter from "./routes/guest.routes.js";
 
 // Routes Declaration
 const apiVersion = "/api/v1/";
 app.use(`${apiVersion}healthcheck`, healthcheckRouter);
 app.use(`${apiVersion}users`, userRouter);
 app.use(`${apiVersion}todos`, todosRouter);
-app.use(`${apiVersion}guest`, guestRouter);
 
 export default app;
