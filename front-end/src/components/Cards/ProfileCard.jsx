@@ -1,4 +1,4 @@
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "./../../contexts/AuthContext";
 import { FaEdit, FaSignOutAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 

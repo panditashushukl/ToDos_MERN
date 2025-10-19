@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { PhotoInput, BlueButton, InputField } from "./index";
-import { apiService } from "./../services/api";
-import { useAuth } from "./../contexts/AuthContext";
+import { PhotoInput, BlueButton, InputField } from "./../index";
+import { apiService } from "./../../services/api";
+import { useAuth } from "./../../contexts/AuthContext";
 
 export default function ProfileEditCard() {
   const [editName, setEditName] = useState(false);

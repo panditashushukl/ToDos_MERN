@@ -1,8 +1,14 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import { Header, Sidebar, TodoCard, ProfileEditCard } from "./components";
-import ProtectedRoute from "./components/ProtectedRoute";
-import AuthModal from "./components/Auth/AuthModal";
+import {
+  Header,
+  Sidebar,
+  TodoCard,
+  ProfileEditCard,
+  ProtectedRoute,
+  AuthModal,
+} from "./../components";
 import { useState } from "react";
+import NotFound from "./NotFound";
 
 export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -43,6 +49,8 @@ export function Layout() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
       <AuthModal isOpen={authModalOpen} onClose={closeAuthModal} />

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "./../../contexts/AuthContext";
-import { BlueButton, InputField, PhotoInput } from "./../index";
+import { BlueButton, InputField, PhotoInput } from "../index";
 
 const RegisterForm = ({ onSwitchToLogin, onClose }) => {
   const [formData, setFormData] = useState({
@@ -65,7 +65,7 @@ const RegisterForm = ({ onSwitchToLogin, onClose }) => {
         return;
       }
 
-      const result = register(
+      const result = await register(
         formData.fullName,
         formData.username,
         formData.password,

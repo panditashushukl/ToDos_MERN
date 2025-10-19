@@ -1,5 +1,5 @@
 import { FaHome, FaCheckCircle, FaArchive, FaClock } from "react-icons/fa";
-import NavCardItem from "./NavCardItem";
+import { NavCardItem } from "./../../index";
 
 const NavCard = () => {
 

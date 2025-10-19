@@ -1,6 +1,5 @@
 import { useState } from "react";
-import EditPhoto from "../photo/EditPhoto";
-import PhotoCropper from "../photo/PhotoCropper";
+import { EditPhoto, PhotoCropper } from "./../index"
 
 const PhotoInput = ({
   label = "",

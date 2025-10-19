@@ -187,7 +187,7 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
 
         <div className="flex flex-col gap-1 md:flex-none md:w-48">
           <InputField
-            type="date"
+            type="datetime-local"
             name="dueDate"
             id="dueDate"
             title="Due Date"
@@ -195,6 +195,7 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
             value={formData.dueDate}
             onChange={handleChange}
             disabled={isLoading}
+            min={new Date().toISOString().slice(0, 16)} 
           />
         </div>
       </div>

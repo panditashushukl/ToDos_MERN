@@ -2,8 +2,8 @@ import { HiOutlineMenu, HiOutlineBell, HiOutlineLogin } from "react-icons/hi";
 import { FaHome } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { useAuth } from "./../contexts/AuthContext";
-import { OverlayCard, ProfileCard, NotificationCard } from "./index";
+import { useAuth } from "./../../contexts/AuthContext";
+import { OverlayCard, ProfileCard, NotificationCard } from "./../index";
 
 const Header = ({ onToggle, onAuthModalOpen, isHome }) => {
   const iconStyle =

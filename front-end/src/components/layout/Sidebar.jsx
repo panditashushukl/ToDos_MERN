@@ -5,7 +5,7 @@ import {
   ProfileCard,
   SearchComponent,
   SocialCard,
-} from "./index";
+} from "./../index";
 
 export default function Sidebar({ isOpen, onClose }) {
   return (

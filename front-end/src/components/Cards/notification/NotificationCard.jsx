@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useTodo } from "./../../contexts/TodoContext";
+import { useTodo } from "./../../../contexts/TodoContext";
 
 const NotificationCard = ({notifications, setNotifications}) => {
   const { todos, stats } = useTodo();

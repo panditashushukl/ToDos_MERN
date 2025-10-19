@@ -1,4 +1,4 @@
-import { SocialLinksCard } from "./../index";
+import { SocialLinksCard } from "./../../index";
 
 import {
   FaGithub,

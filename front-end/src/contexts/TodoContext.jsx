@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useAuth } from "./AuthContext";
-import { apiService } from "../services/api";
+import { apiService } from "./../services/api";
 
 export const TodoContext = createContext({
   todos: [],

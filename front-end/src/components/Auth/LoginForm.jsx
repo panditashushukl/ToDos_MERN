@@ -25,7 +25,7 @@ const LoginForm = ({ onSwitchToRegister, onClose }) => {
     setIsLoading(true);
     setError("");
 
-    const result = login(formData.username, formData.password);
+    const result = await login(formData.username, formData.password);
 
     if (result.success) {
       onClose?.();
