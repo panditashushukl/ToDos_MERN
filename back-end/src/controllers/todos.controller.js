@@ -187,7 +187,7 @@ const updateTodo = asyncHandler(async (req, res) => {
 });
 
 const updateLabel = asyncHandler(async (req, res) => {
-  const { label : oldLabel } = req.params;
+  const { label: oldLabel } = req.params;
   const { newLabel } = req.body;
 
   if (!oldLabel || !oldLabel.trim()) {
@@ -322,41 +322,53 @@ const toggleTodoArchive = asyncHandler(async (req, res) => {
 const getTodoStats = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
-  const [
-    completedTodos,
-    pendingTodos,
-    archivedTodos,
-    overdueTodos,
-  ] = await Promise.all([
-    Todo.countDocuments({
-      owner: userId,
-      isCompleted: true,
-      isArchieved: false,
-    }),
-    Todo.countDocuments({
-      owner: userId,
-      isCompleted: false,
-      isArchieved: false,
-    }),
-    Todo.countDocuments({ owner: userId, isArchieved: true }),
-    Todo.countDocuments({
-      owner: userId,
-      dueDate: { $lt: new Date() },
-      isCompleted: false,
-      isArchieved: false,
-    }),
+  const statsResult = await Todo.aggregate([
+    {
+      $match: {
+        owner: userId,
+      },
+    },
+    {
+      $facet: {
+        completed: [
+          { $match: { isCompleted: true, isArchieved: false } },
+          { $count: "count" },
+        ],
+        pending: [
+          { $match: { isCompleted: false, isArchieved: false } },
+          { $count: "count" },
+        ],
+        archived: [{ $match: { isArchieved: true } }, { $count: "count" }],
+        overdue: [
+          {
+            $match: {
+              isCompleted: false,
+              isArchieved: false,
+              dueDate: { $lt: new Date() },
+            },
+          },
+          { $count: "count" },
+        ],
+      },
+    },
   ]);
 
-  const totalTodos = completedTodos + pendingTodos
+  const result = statsResult[0];
+
+  const completed = result.completed[0]?.count || 0;
+  const pending = result.pending[0]?.count || 0;
+  const archived = result.archived[0]?.count || 0;
+  const overdue = result.overdue[0]?.count || 0;
+
+  const total = completed + pending; // only non-archived
 
   const stats = {
-    total: totalTodos,
-    completed: completedTodos,
-    pending: pendingTodos,
-    archived: archivedTodos,
-    overdue: overdueTodos,
-    completionRate:
-      totalTodos > 0 ? Math.round((completedTodos / (completedTodos + pendingTodos)) * 100) : 0,
+    total,
+    completed,
+    pending,
+    archived,
+    overdue,
+    completionRate: total > 0 ? Math.round((completed / total) * 100) : 0,
   };
 
   return res

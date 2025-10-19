@@ -1,8 +1,9 @@
 const API_BASE_URL =
-  import.meta.env.VITE_API === "PRODUCTION"
+  import.meta.env.VITE_ENV === "PRODUCTION"
     ? `${import.meta.env.VITE_API_PRODUCTION_URL}/v1`
     : `${import.meta.env.VITE_API_DEV_URL}/v1`;
 
+  
 class ApiService {
   constructor() {
     this.baseURL = API_BASE_URL;
