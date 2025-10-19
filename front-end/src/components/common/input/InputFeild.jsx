@@ -1,10 +1,12 @@
+import { useId } from "react";
+
 const InputField = ({
   label,
   placeholder = "",
   type = "text",
   value,
   onChange,
-  name,
+  id,
   required = false,
   className = "",
   Icon,
@@ -13,6 +15,8 @@ const InputField = ({
   ...props
 }) => {
   const Component = textArea ? "textarea" : "input";
+  const inputId = id || useId();
+
   return (
     <div className={`relative w-full mb-6 ${props.wrapperClassName || ""}`}>
       {/* Icon on the left */}
@@ -23,8 +27,7 @@ const InputField = ({
       {/* Input */}
       <Component
         type={type}
-        name={name}
-        id={name}
+        id={inputId}
         required={required}
         value={value}
         onChange={onChange}
@@ -34,11 +37,10 @@ const InputField = ({
         } ${button ? "pr-20" : ""} py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ${className}`}
         {...props}
       />
-
       {/* Label */}
       {label && (
         <label
-          htmlFor={name}
+          htmlFor={inputId}
           className={`absolute ${
             Icon ? "left-10" : "left-4"
           } text-sm transition-all duration-150 transform origin-left px-1

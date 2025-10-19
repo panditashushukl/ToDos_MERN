@@ -55,6 +55,7 @@ const LoginForm = ({ onSwitchToRegister, onClose }) => {
           label="Username"
           type="text"
           name="username"
+          id="l-username"
           value={formData.username}
           onChange={handleChange}
           required
@@ -66,6 +67,7 @@ const LoginForm = ({ onSwitchToRegister, onClose }) => {
           label="Password"
           type="password"
           name="password"
+          id="l-password"
           value={formData.password}
           onChange={handleChange}
           required

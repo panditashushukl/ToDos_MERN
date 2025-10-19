@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTodo } from "./../../contexts/TodoContext";
 
-function TodoItem({ todo, onEdit }) {
+function TodoItem({ todo, onEdit, editingTodo }) {
   const todoId = todo.id ?? todo._id;
   const isCompleted = todo.completed ?? todo.isCompleted ?? false;
   const isArchived = todo.archived ?? todo.isArchieved ?? false;
@@ -113,7 +113,7 @@ function TodoItem({ todo, onEdit }) {
             disabled={isCompleted || isArchived || isLoading}
             title="Edit"
           >
-            ✏️
+            {editingTodo && (editingTodo.id ?? editingTodo._id) === todoId ? "✍️" : "✏️"}
           </button>
 
           {/* Archive/Unarchive */}

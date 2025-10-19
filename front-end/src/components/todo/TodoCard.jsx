@@ -223,6 +223,7 @@ export default function TodoCard() {
                   key={normalizedTodo._id || normalizedTodo.id}
                   todo={normalizedTodo}
                   onEdit = {()=> setEditingTodo(normalizedTodo)}
+                  editingTodo={editingTodo}
                 />
               );
             })

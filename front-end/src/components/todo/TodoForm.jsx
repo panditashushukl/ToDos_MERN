@@ -124,11 +124,12 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
   );
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3">
+    <form onSubmit={handleSubmit} className="space-y-3" id="todo-form" name="todo-form">
       <div className="flex gap-2">
         <InputField
           type="text"
           name="content"
+          id="todo-content"
           placeholder="Write Todo Content"
           label="Write Todo Content"
           value={formData.content}
@@ -159,7 +160,8 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
           <InputField
             ref={labelInputRef}
             type="text"
-            name="label"
+            name="todo-label"
+            id="todo-label"
             label="Label"
             placeholder="Enter Label"
             value={customLabel}
@@ -168,6 +170,7 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
             onBlur={handleLabelBlur}
             disabled={isLoading}
             autoComplete="off"
+
           />
 
           {showLabelSuggestions && filteredLabels.length > 0 && (

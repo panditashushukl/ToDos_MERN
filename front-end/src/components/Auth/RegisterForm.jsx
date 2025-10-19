@@ -117,6 +117,7 @@ const RegisterForm = ({ onSwitchToLogin, onClose }) => {
           label="Username"
           type="text"
           name="username"
+          id="r-username"
           value={formData.username}
           onChange={handleChange}
           required
@@ -128,6 +129,7 @@ const RegisterForm = ({ onSwitchToLogin, onClose }) => {
           label="Password"
           type="password"
           name="password"
+          id="r-password"
           value={formData.password}
           onChange={handleChange}
           required
@@ -138,7 +140,8 @@ const RegisterForm = ({ onSwitchToLogin, onClose }) => {
         <InputField
           label="Confirm Password"
           type="password"
-          name="confirmPassword"
+          name="password"
+          id="confirm-password"
           value={formData.confirmPassword}
           onChange={handleChange}
           required
