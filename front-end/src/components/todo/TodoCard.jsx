@@ -1,4 +1,4 @@
-import { useState  } from "react";
+import { useState } from "react";
 import { useTodo } from "./../../contexts/TodoContext";
 import { useAuth } from "./../../contexts/AuthContext";
 import { SearchComponent, TodoForm, TodoItem, LoadingCard } from "./../index";
@@ -18,7 +18,7 @@ export default function TodoCard() {
   } = useTodo();
 
   const { isAuthenticated } = useAuth();
-  const [editingTodo, setEditingTodo] = useState(null)
+  const [editingTodo, setEditingTodo] = useState(null);
 
   const filteredTodos = todos.filter((todo) => {
     const isCompleted = todo.isCompleted || todo.completed;
@@ -105,16 +105,16 @@ export default function TodoCard() {
                 text: "text-orange-400",
               },
               {
-                label: "Archived",
-                value: stats.archived,
-                color: "border-gray-400",
-                text: "text-gray-400",
-              },
-              {
                 label: "Complete",
                 value: `${stats.completionRate}%`,
                 color: "border-purple-500",
                 text: "text-purple-500",
+              },
+              {
+                label: "Archived",
+                value: stats.archived,
+                color: "border-gray-400",
+                text: "text-gray-400",
               },
             ].map(({ label, value, color, text }) => (
               <div
@@ -130,7 +130,7 @@ export default function TodoCard() {
 
         {/* Todo Form */}
         <div className="mb-8">
-          <TodoForm 
+          <TodoForm
             editingTodo={editingTodo}
             onSave={() => setEditingTodo(null)}
           />
@@ -222,7 +222,7 @@ export default function TodoCard() {
                 <TodoItem
                   key={normalizedTodo._id || normalizedTodo.id}
                   todo={normalizedTodo}
-                  onEdit = {()=> setEditingTodo(normalizedTodo)}
+                  onEdit={() => setEditingTodo(normalizedTodo)}
                   editingTodo={editingTodo}
                 />
               );
