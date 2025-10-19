@@ -140,7 +140,7 @@ const RegisterForm = ({ onSwitchToLogin, onClose }) => {
         <InputField
           label="Confirm Password"
           type="password"
-          name="password"
+          name="confirmPassword"
           id="confirm-password"
           value={formData.confirmPassword}
           onChange={handleChange}
