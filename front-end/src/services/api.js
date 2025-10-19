@@ -1,4 +1,7 @@
-const API_BASE_URL = import.meta.env.VITE_API === "PRODUCTION" ? `${import.meta.env.VITE_API_DEV_URL}/v1` :  `${import.meta.env.VITE_API_PRODUCTION_URL}/v1`
+const API_BASE_URL =
+  import.meta.env.VITE_API === "PRODUCTION"
+    ? `${import.meta.env.VITE_API_PRODUCTION_URL}/v1`
+    : `${import.meta.env.VITE_API_DEV_URL}/v1`;
 
 class ApiService {
   constructor() {
@@ -7,11 +10,11 @@ class ApiService {
 
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
-    const token = localStorage.getItem('accessToken');
-    
+    const token = localStorage.getItem("accessToken");
+
     const config = {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         ...options.headers,
       },
       ...options,
@@ -26,34 +29,34 @@ class ApiService {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Request failed');
+        throw new Error(data.message || "Request failed");
       }
 
       return data;
     } catch (error) {
-      console.error('API request failed:', error);
+      console.error("API request failed:", error);
       throw error;
     }
   }
 
   // User endpoints
   async getCurrentUser() {
-    return this.request('/users/current-user');
+    return this.request("/users/current-user");
   }
 
   async updateProfile(data) {
-    return this.request('/users/update-details', {
-      method: 'PATCH',
+    return this.request("/users/update-details", {
+      method: "PATCH",
       body: JSON.stringify(data),
     });
   }
 
   async updateAvatar(avatarFile) {
     const formData = new FormData();
-    formData.append('avatar', avatarFile);
-    
-    return this.request('/users/avatar', {
-      method: 'PATCH',
+    formData.append("avatar", avatarFile);
+
+    return this.request("/users/avatar", {
+      method: "PATCH",
       headers: {}, // Let browser set Content-Type for FormData
       body: formData,
     });
@@ -62,48 +65,48 @@ class ApiService {
   // Todo endpoints
   async getTodos(params = {}) {
     const queryString = new URLSearchParams(params).toString();
-    const endpoint = `/todos/user/todos${queryString ? `?${queryString}` : ''}`;
+    const endpoint = `/todos/user/todos${queryString ? `?${queryString}` : ""}`;
     return this.request(endpoint);
   }
 
   async createTodo(todoData) {
-    return this.request('/todos', {
-      method: 'POST',
+    return this.request("/todos", {
+      method: "POST",
       body: JSON.stringify(todoData),
     });
   }
 
   async updateTodo(todoId, todoData) {
     return this.request(`/todos/${todoId}`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify(todoData),
     });
   }
 
   async deleteTodo(todoId) {
     return this.request(`/todos/${todoId}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
   async toggleTodoCompletion(todoId) {
     return this.request(`/todos/${todoId}/toggle-completion`, {
-      method: 'PATCH',
+      method: "PATCH",
     });
   }
 
   async toggleTodoArchive(todoId) {
     return this.request(`/todos/${todoId}/toggle-archive`, {
-      method: 'PATCH',
+      method: "PATCH",
     });
   }
 
   async getTodoStats() {
-    return this.request('/todos/stats');
+    return this.request("/todos/stats");
   }
 
   async getLabels() {
-    return this.request('/todos/user/labels');
+    return this.request("/todos/user/labels");
   }
 
   async getTodosByLabel(label) {
@@ -112,20 +115,20 @@ class ApiService {
 
   async updateLabel(oldLabel, newLabel) {
     return this.request(`/todos/label/${encodeURIComponent(oldLabel)}`, {
-      method: 'PATCH',
+      method: "PATCH",
       body: JSON.stringify({ newLabel }),
     });
   }
 
   async deleteLabel(label) {
     return this.request(`/todos/label/${encodeURIComponent(label)}`, {
-      method: 'DELETE',
+      method: "DELETE",
     });
   }
 
   async bulkUpdateTodos(todoIds, operation) {
-    return this.request('/todos/bulk', {
-      method: 'PATCH',
+    return this.request("/todos/bulk", {
+      method: "PATCH",
       body: JSON.stringify({ todoIds, operation }),
     });
   }
