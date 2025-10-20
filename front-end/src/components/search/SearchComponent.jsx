@@ -1,6 +1,6 @@
 import { useTodo } from "./../../contexts/TodoContext";
 import { FaSearch } from "react-icons/fa";
-import { InputField } from "./../index";
+import { InputField, BlueButton } from "./../index";
 
 const SearchComponent = ({className ,...props}) => {
   const { searchTerm, handleSearchChange } = useTodo();
@@ -16,6 +16,15 @@ const SearchComponent = ({className ,...props}) => {
         onChange={(e) => handleSearchChange(e.target.value)}
         Icon={FaSearch}
         {...props}
+        button={
+          <BlueButton 
+            type="button"
+            onClick={() => handleSearchChange("")}
+            disabled={searchTerm===""}
+          >
+            ❌
+          </BlueButton>
+        }
       />
     </div>
   );

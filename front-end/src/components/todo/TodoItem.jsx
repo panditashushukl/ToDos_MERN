@@ -58,7 +58,7 @@ function TodoItem({ todo, onEdit, editingTodo }) {
           : "bg-purple-900/30 border-purple-700"
       } ${isOverdue ? "border-red-500" : "border-white/10"}`}
     >
-      <div className="flex items-start md:items-center gap-x-3">
+      <div className="flex flex-wrap items-start md:items-center gap-3">
         {/* Checkbox */}
         <input
           type="checkbox"
@@ -69,9 +69,9 @@ function TodoItem({ todo, onEdit, editingTodo }) {
         />
 
         {/* Content */}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           <p
-            className={`text-white ${
+            className={`text-white break-words whitespace-pre-wrap overflow-hidden ${
               isCompleted ? "line-through text-gray-400" : ""
             }`}
           >
@@ -113,7 +113,9 @@ function TodoItem({ todo, onEdit, editingTodo }) {
             disabled={isCompleted || isArchived || isLoading}
             title="Edit"
           >
-            {editingTodo && (editingTodo.id ?? editingTodo._id) === todoId ? "✍️" : "✏️"}
+            {editingTodo && (editingTodo.id ?? editingTodo._id) === todoId
+              ? "✍️"
+              : "✏️"}
           </button>
 
           {/* Archive/Unarchive */}
@@ -123,7 +125,7 @@ function TodoItem({ todo, onEdit, editingTodo }) {
             disabled={isLoading}
             title={isArchived ? "Unarchive" : "Archive"}
           >
-            {isArchived ? "📤" : "📦"}
+            {isArchived ? "📤" : "📥"}
           </button>
 
           {/* Delete */}

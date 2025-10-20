@@ -84,7 +84,7 @@ export default function TodoCard() {
 
         {/* Stats Display */}
         {stats && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-6 gap-3 mb-8">
             {[
               {
                 label: "Total",
@@ -109,6 +109,12 @@ export default function TodoCard() {
                 value: `${stats.completionRate}%`,
                 color: "border-purple-500",
                 text: "text-purple-500",
+              },
+              {
+                label: "Overdue",
+                value: stats.overdue,
+                color: "border-yellow-500",
+                text: "text-yellow-600",
               },
               {
                 label: "Archived",

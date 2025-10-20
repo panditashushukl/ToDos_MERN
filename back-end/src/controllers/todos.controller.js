@@ -360,7 +360,7 @@ const getTodoStats = asyncHandler(async (req, res) => {
   const archived = result.archived[0]?.count || 0;
   const overdue = result.overdue[0]?.count || 0;
 
-  const total = completed + pending; // only non-archived
+  const total = completed + pending + archived;
 
   const stats = {
     total,
@@ -368,7 +368,7 @@ const getTodoStats = asyncHandler(async (req, res) => {
     pending,
     archived,
     overdue,
-    completionRate: total > 0 ? Math.round((completed / total) * 100) : 0,
+    completionRate: total > 0 ? Math.round((completed / (completed + pending)) * 100) : 0,
   };
 
   return res

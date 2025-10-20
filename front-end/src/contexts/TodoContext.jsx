@@ -119,7 +119,7 @@ export const TodoProvider = ({ children }) => {
   // Calculate stats for guest mode
   const calculateGuestStats = (todos) => {
     const total = todos.length;
-    const completed = todos.filter((todo) => todo.isCompleted).length;
+    const completed = todos.filter((todo) => (todo.isCompleted && !todo.isArchieved)).length;
     const pending = todos.filter(
       (todo) => !todo.isCompleted && !todo.isArchieved
     ).length;
@@ -138,7 +138,7 @@ export const TodoProvider = ({ children }) => {
       pending,
       archived,
       overdue,
-      completionRate: total > 0 ? Math.round((completed / total) * 100) : 0,
+      completionRate: total > 0 ? Math.round((completed / (completed + pending)) * 100) : 0,
     };
   };
 
