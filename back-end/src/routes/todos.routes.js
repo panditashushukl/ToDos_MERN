@@ -10,6 +10,7 @@ import {
   updateLabel,
   deleteTodo,
   deleteLabel,
+  deleteUserTodos,
   toggleTodoCompletion,
   toggleTodoArchive,
   getTodoStats,
@@ -25,7 +26,7 @@ router.use(verifyJWT);
 router.route("/").post(createTodo);
 
 // get User Todos
-router.route("/user/todos").get(getUserTodos);
+router.route("/user/todos").get(getUserTodos).delete(deleteUserTodos);
 
 // Get All User Labels
 router.route("/user/labels").get(getUserLabels);

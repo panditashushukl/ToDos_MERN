@@ -1,5 +1,5 @@
 import { User } from "./../models/user.model.js";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 import {
   ApiError,
   ApiResponse,
@@ -61,9 +61,8 @@ const registerUser = asyncHandler(async (req, res) => {
 
   let avatar;
   if (avatarLocalPath) {
-    
     avatar = await uploadOnCloudinary(avatarLocalPath);
-    
+
     if (!avatar) {
       throw new ApiError(500, "Something went wrong while uploading Avatar");
     }
@@ -272,6 +271,20 @@ const updateUserAvatar = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, user, "Avatar updated successfully"));
 });
 
+const deleteAccount = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const deletedUser = await User.findByIdAndDelete(userId);
+
+  if (!deletedUser) {
+    throw new ApiError(404, {}, "User not found or already deleted.");
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, "User Deleted Successfully"));
+});
+
 export {
   registerUser,
   loginUser,
@@ -281,4 +294,5 @@ export {
   getCurrentUser,
   updateAccountDetails,
   updateUserAvatar,
+  deleteAccount,
 };

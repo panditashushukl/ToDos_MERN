@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useTodo } from "./../../contexts/TodoContext";
+import { useToast } from "./../../contexts/ToastContext";
 import { InputField, BlueButton } from "./../index";
 
 function TodoForm({ editingTodo = null, onSave = () => {} }) {
@@ -14,9 +15,9 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
   const [customLabel, setCustomLabel] = useState("General");
   const [isCustomLabel, setIsCustomLabel] = useState(false);
   const [showLabelSuggestions, setShowLabelSuggestions] = useState(false);
-  const [error, setError] = useState("");
 
   const { addTodo, updateTodo, labels } = useTodo();
+  const { addToast } = useToast();
   const labelInputRef = useRef(null);
 
   // Load editing todo into form
@@ -43,7 +44,6 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
     });
     setCustomLabel("General");
     setIsCustomLabel(false);
-    setError("");
   };
 
   const handleChange = (e) => {
@@ -77,7 +77,6 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
 
     const trimmedContent = formData.content.trim();
     const trimmedLabel = isCustomLabel
@@ -85,12 +84,12 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
       : formData.label.trim();
 
     if (!trimmedContent) {
-      setError("Content is required");
+      addToast({ type: "error", title: "Validation Error", message: "Content is required" });
       return;
     }
 
     if (!trimmedLabel) {
-      setError("Label is required");
+      addToast({ type: "error", title: "Validation Error", message: "Label is required" });
       return;
     }
 
@@ -110,10 +109,21 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
     }
 
     if (result?.success) {
+      addToast({
+        type: "success",
+        title: formData.id ? "Todo Updated" : "Todo Added",
+        message: formData.id
+          ? "Your todo has been updated successfully."
+          : "Your new todo has been added successfully.",
+      });
       resetForm();
-      onSave(); // clear editing in parent
+      onSave();
     } else {
-      setError(result?.message || "Failed to save todo.");
+      addToast({
+        type: "error",
+        title: "Save Failed",
+        message: result?.message || "Failed to save todo.",
+      });
     }
 
     setIsLoading(false);
@@ -198,12 +208,10 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
             value={formData.dueDate}
             onChange={handleChange}
             disabled={isLoading}
-            min={new Date().toISOString().slice(0, 16)} 
           />
         </div>
       </div>
 
-      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </form>
   );
 }

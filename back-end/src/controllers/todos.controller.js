@@ -238,16 +238,37 @@ const deleteLabel = asyncHandler(async (req, res) => {
 
   const result = await Todo.deleteMany({ label });
 
+  if (!result) {
+    throw new ApiError(404, {}, `Todos with label ${label} Not found or already deleted.`)
+  }
+
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        result,
+        {},
         `All todos with label ${label} deleted successfully.`
       )
     );
 });
+
+const deleteUserTodos = asyncHandler(async (req,res) => {
+  const userId = req.user._id
+
+  const deletedTodos = await Todo.deleteMany({owner:userId})
+
+  if (!deletedTodos) {
+    throw new ApiError(404, {}, "Todos not Found or already deleted")
+  }
+
+  return res
+  .status(200)
+  .json(
+    new ApiResponse(200, {}, "Todos Deleted Successfully")
+  )
+
+})
 
 const toggleTodoCompletion = asyncHandler(async (req, res) => {
   const { todoId } = req.params;
@@ -449,6 +470,7 @@ export {
   updateTodo,
   deleteTodo,
   deleteLabel,
+  deleteUserTodos,
   toggleTodoCompletion,
   toggleTodoArchive,
   getTodoStats,

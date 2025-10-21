@@ -26,22 +26,29 @@ export function ToastProvider({ children }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      <div className="fixed top-20 left-1/2 transform -translate-x-1/2 flex flex-col space-y-2 z-50">
+      <div className="fixed top-5 left-1/2 transform -translate-x-1/2 flex flex-col space-y-2 z-[1000]">
         {toasts.map((toast) => (
           <div
             key={toast.id}
             className={`
-      animate-in slide-in-from-top fade-in duration-300
-      max-w-sm w-full 
-      px-4 py-3 rounded-lg shadow-lg transition-all
-      ${toast.type === "success" ? "bg-green-600 text-white" : ""}
-      ${toast.type === "error" ? "bg-red-600 text-white" : ""}
-      ${toast.type === "info" ? "bg-blue-500 text-white" : ""}
-      ${toast.type === "warning" ? "bg-yellow-500 text-black" : ""}
-    `}
+        max-w-sm w-full px-4 py-3 rounded-lg shadow-lg transition-all duration-300
+        ${
+          toast.type === "success"
+            ? "bg-green-600 text-white border-l-4 border-green-400"
+            : toast.type === "error"
+            ? "bg-red-600 text-white border-l-4 border-red-400"
+            : toast.type === "info"
+            ? "bg-blue-500 text-white border-l-4 border-blue-300"
+            : toast.type === "warning"
+            ? "bg-yellow-500 text-black border-l-4 border-yellow-300"
+            : ""
+        }
+      `}
           >
-            {toast.title && <div className="font-semibold">{toast.title}</div>}
-            <div>{toast.message}</div>
+            {toast.title && (
+              <div className="font-semibold mb-1">{toast.title}</div>
+            )}
+            <div className="text-sm">{toast.message}</div>
           </div>
         ))}
       </div>

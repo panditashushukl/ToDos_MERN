@@ -6,14 +6,14 @@ import { ToastProvider } from "./contexts/ToastContext";
 
 export default function App() {
   return (
-    <AuthProvider>
-      <TodoProvider>
-        <ToastProvider>
+    <ToastProvider>
+      <AuthProvider>
+        <TodoProvider>
           <Router>
             <Layout />
           </Router>
-        </ToastProvider>
-      </TodoProvider>
-    </AuthProvider>
+        </TodoProvider>
+      </AuthProvider>
+    </ToastProvider>
   );
 }

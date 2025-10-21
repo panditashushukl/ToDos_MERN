@@ -3,7 +3,6 @@ const API_BASE_URL =
     ? `${import.meta.env.VITE_API_PRODUCTION_URL}/v1`
     : `${import.meta.env.VITE_API_DEV_URL}/v1`;
 
-  
 class ApiService {
   constructor() {
     this.baseURL = API_BASE_URL;
@@ -63,11 +62,31 @@ class ApiService {
     });
   }
 
-  async changePassword(oldPassword, newPassword){
+  async changePassword(oldPassword, newPassword) {
     return this.request("/users/change-password", {
       method: "POST",
-      body: JSON.stringify({oldPassword,newPassword})
-    })
+      body: JSON.stringify({ oldPassword, newPassword }),
+    });
+  }
+
+  async deleteUser() {
+    const todosResponse = await this.request("/todos/user/todos", {
+      method: "DELETE",
+    });
+
+    if (!todosResponse.statusCode) {
+      throw new Error(todosResponse.message || "Failed to delete todos");
+    }
+
+    const userResponse = await this.request("/users/delete-user", {
+      method: "DELETE",
+    });
+
+    if (!userResponse.statusCode) {
+      throw new Error(userResponse.message || "Failed to delete user");
+    }
+
+    return userResponse;
   }
 
   // Todo endpoints

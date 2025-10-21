@@ -10,6 +10,7 @@ import {
   getCurrentUser,
   updateAccountDetails,
   updateUserAvatar,
+  deleteAccount,
 } from "./../controllers/user.controller.js";
 
 const router = Router();
@@ -24,6 +25,7 @@ router.route("/refresh-token").post(refreshAccessToken);
 router.route("/change-password").post(verifyJWT, changeCurrentPassword);
 router.route("/current-user").get(verifyJWT, getCurrentUser);
 router.route("/update-details").patch(verifyJWT, updateAccountDetails);
+router.route("/delete-user").delete(verifyJWT,deleteAccount)
 
 router
   .route("/avatar")

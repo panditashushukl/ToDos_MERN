@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @plugin 'tailwind-scrollbar';
 
+@theme {
+  --color-primary: oklch(0.60 0.30 250); /* example */
+  --color-secondary: oklch(0.55 0.40 300);
+}
+
 :root{
   background-color: black;
 }
