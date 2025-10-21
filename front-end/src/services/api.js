@@ -63,6 +63,13 @@ class ApiService {
     });
   }
 
+  async changePassword(oldPassword, newPassword){
+    return this.request("/users/change-password", {
+      method: "POST",
+      body: JSON.stringify({oldPassword,newPassword})
+    })
+  }
+
   // Todo endpoints
   async getTodos(params = {}) {
     const queryString = new URLSearchParams(params).toString();

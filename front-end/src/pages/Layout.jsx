@@ -10,12 +10,13 @@ import {
 } from "./../components";
 import { useState } from "react";
 import NotFound from "./NotFound";
-import { useAuth } from "./../contexts/AuthContext";  
+import { useAuth } from "./../contexts/AuthContext";
+import { ToastProvider } from "./../contexts/ToastContext";
 
 export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const { isLoading } = useAuth()
+  const { isLoading } = useAuth();
 
   const location = useLocation();
   const isHome = location.pathname === "/";
@@ -26,7 +27,7 @@ export function Layout() {
   const closeAuthModal = () => setAuthModalOpen(false);
 
   if (isLoading) {
-    return <LoadingCard />
+    return <LoadingCard />;
   }
 
   return (
@@ -52,7 +53,9 @@ export function Layout() {
           path="/edit-profile"
           element={
             <ProtectedRoute>
-              <ProfileEditCard />
+              <ToastProvider>
+                <ProfileEditCard />
+              </ToastProvider>
             </ProtectedRoute>
           }
         />

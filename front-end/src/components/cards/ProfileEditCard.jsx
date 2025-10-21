@@ -2,57 +2,122 @@ import { useState } from "react";
 import { PhotoInput, BlueButton, InputField } from "./../index";
 import { apiService } from "./../../services/api";
 import { useAuth } from "./../../contexts/AuthContext";
+import { useToast } from "./../../contexts/ToastContext";
 
 export default function ProfileEditCard() {
   const [editName, setEditName] = useState(false);
   const [editPhoto, setEditPhoto] = useState(false);
+  const [editPassword, setEditPassword] = useState(false);
+
   const [name, setName] = useState("");
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const { updateUser } = useAuth();
 
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+
+  const { addToast } = useToast();
+
   const handleSubmit = async () => {
     try {
       setLoading(true);
+
+      let data = null;
+
       if (editName && name.trim() !== "") {
-        await apiService.updateProfile({ fullName: name });
+        data = await apiService.updateProfile({ fullName: name });
         updateUser({ fullName: name });
+        addToast({ type: "success", message: "Name updated successfully!" });
+        setEditName(false);
+        setName("");
+      }
+
+      if (
+        editPassword &&
+        oldPassword.trim() &&
+        newPassword.trim() &&
+        confirmNewPassword.trim()
+      ) {
+        if (!validatePassword()) {
+          setLoading(false);
+          return;
+        }
+
+        data = await apiService.changePassword(oldPassword, newPassword);
+        addToast({
+          type: "success",
+          message: "Password updated successfully!",
+        });
+        setEditPassword(false);
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmNewPassword("");
       }
 
       if (editPhoto && preview) {
         const blob = await (await fetch(preview)).blob();
         const file = new File([blob], "avatar.jpg", { type: blob.type });
-        const result = await apiService.updateAvatar(file);
-        const avatar = result?.data?.avatar;
+        data = await apiService.updateAvatar(file);
+        const avatar = data?.data?.avatar;
         updateUser({ avatar });
+        addToast({ type: "success", message: "Profile photo updated!" });
+        setEditPhoto(false);
+        setPreview(null);
       }
 
-      alert("Profile updated successfully!");
-      setEditName(false);
-      setEditPhoto(false);
-      setName("");
-      setPreview(null);
+      if (!data) {
+        addToast({ type: "info", message: "No changes were made." });
+      }
     } catch (err) {
       console.error("Error updating profile:", err);
-      alert("Failed to update profile.");
+      addToast({
+        type: "error",
+        message: "Failed to update profile. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  const validatePassword = () => {
+    if (newPassword !== confirmNewPassword) {
+      addToast({ type: "error", message: "Passwords do not match." });
+      return false;
+    }
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,12}$/;
+    if (!passwordRegex.test(newPassword)) {
+      addToast({
+        type: "error",
+        message:
+          "Password must be 8‑12 characters and include uppercase, lowercase, number, & special character.",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const canSubmit =
-    (editName && name.trim() !== "") || (editPhoto && preview !== null);
+    (editName && name.trim()) ||
+    (editPhoto && preview !== null) ||
+    (editPassword &&
+      oldPassword.trim() &&
+      newPassword.trim() &&
+      confirmNewPassword.trim());
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-6 text-white">
       <div className="bg-gray-800 shadow-xl rounded-xl p-8 max-w-md w-full space-y-8 border border-gray-700">
-        <h2 className="text-3xl font-bold text-white text-center">
+        <h3 className="text-3xl font-bold text-white text-center">
           Edit Profile
-        </h2>
+        </h3>
 
         {/* Edit Name Toggle */}
         <div className="flex items-center justify-between">
-          <span className="text-lg text-gray-200">Edit Full Name?</span>
+          <span className="text-lg text-gray-200">Edit Name?</span>
           <div
             onClick={() => setEditName(!editName)}
             className={`w-14 h-8 flex items-center rounded-full p-1 cursor-pointer transition duration-300 ${
@@ -74,9 +139,59 @@ export default function ProfileEditCard() {
             label="Enter new Name"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            disabled={loading}
           />
         )}
 
+        {/* Change Password Toggle */}
+        <div className="flex items-center justify-between">
+          <span className="text-lg text-gray-200">Change Password?</span>
+          <div
+            onClick={() => setEditPassword(!editPassword)}
+            className={`w-14 h-8 flex items-center rounded-full p-1 cursor-pointer transition duration-300 ${
+              editPassword ? "bg-blue-600" : "bg-gray-600"
+            }`}
+          >
+            <div
+              className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform duration-300 ${
+                editPassword ? "translate-x-6" : "translate-x-0"
+              }`}
+            ></div>
+          </div>
+        </div>
+
+        {editPassword && (
+          <>
+            <InputField
+              type="password"
+              placeholder="Enter old Password"
+              label="Old Password"
+              value={oldPassword}
+              onChange={(e) => setOldPassword(e.target.value)}
+              disabled={loading}
+            />
+
+            <InputField
+              type="password"
+              placeholder="Enter new Password"
+              label="New Password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              disabled={loading}
+            />
+
+            <InputField
+              type="password"
+              placeholder="Confirm new Password"
+              label="Confirm New Password"
+              value={confirmNewPassword}
+              onChange={(e) => setConfirmNewPassword(e.target.value)}
+              disabled={loading}
+            />
+          </>
+        )}
+
+        {/* Edit Photo Toggle */}
         <div className="flex items-center justify-between">
           <span className="text-lg text-gray-200">Edit Profile Photo?</span>
           <div
@@ -99,6 +214,7 @@ export default function ProfileEditCard() {
             setPreview={setPreview}
             label="Upload Profile Photo"
             labelFor="profile-photo"
+            disabled={loading}
           />
         )}
 

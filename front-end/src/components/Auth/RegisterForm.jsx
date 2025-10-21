@@ -127,7 +127,7 @@ const RegisterForm = ({ onSwitchToLogin, onClose }) => {
 
         <InputField
           label="Password"
-          type="password"
+          type="text"
           name="password"
           id="r-password"
           value={formData.password}
