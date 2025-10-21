@@ -14,9 +14,18 @@ export default function ProfileEditCard() {
   const [loading, setLoading] = useState(false);
   const { updateUser } = useAuth();
 
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [password, setPassword] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  })
+
+  const handlePasswordChange = (e) => {
+    setPassword({
+      ...password,
+      [e.target.name] : e.target.value,
+    })
+  }
 
   const { addToast } = useToast();
 
@@ -36,24 +45,26 @@ export default function ProfileEditCard() {
 
       if (
         editPassword &&
-        oldPassword.trim() &&
-        newPassword.trim() &&
-        confirmNewPassword.trim()
+        password.oldPassword.trim() &&
+        password.newPassword.trim() &&
+        password.confirmNewPassword.trim()
       ) {
         if (!validatePassword()) {
           setLoading(false);
           return;
         }
 
-        data = await apiService.changePassword(oldPassword, newPassword);
+        data = await apiService.changePassword(password.oldPassword, password.newPassword);
         addToast({
           type: "success",
           message: "Password updated successfully!",
         });
         setEditPassword(false);
-        setOldPassword("");
-        setNewPassword("");
-        setConfirmNewPassword("");
+        setPassword({
+          oldPassword:"",
+          newPassword:"",
+          confirmNewPassword:"",
+        })
       }
 
       if (editPhoto && preview) {
@@ -82,13 +93,13 @@ export default function ProfileEditCard() {
   };
 
   const validatePassword = () => {
-    if (newPassword !== confirmNewPassword) {
+    if (password.newPassword !== password.confirmNewPassword) {
       addToast({ type: "error", message: "Passwords do not match." });
       return false;
     }
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,12}$/;
-    if (!passwordRegex.test(newPassword)) {
+    if (!passwordRegex.test(password.newPassword)) {
       addToast({
         type: "error",
         message:
@@ -104,9 +115,9 @@ export default function ProfileEditCard() {
     (editName && name.trim()) ||
     (editPhoto && preview !== null) ||
     (editPassword &&
-      oldPassword.trim() &&
-      newPassword.trim() &&
-      confirmNewPassword.trim());
+      password.oldPassword.trim() &&
+      password.newPassword.trim() &&
+      password.confirmNewPassword.trim());
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 flex items-center justify-center p-6 text-white">
@@ -166,17 +177,19 @@ export default function ProfileEditCard() {
               type="password"
               placeholder="Enter old Password"
               label="Old Password"
-              value={oldPassword}
-              onChange={(e) => setOldPassword(e.target.value)}
+              name="oldPassword"
+              value={password.oldPassword}
+              onChange={handlePasswordChange}
               disabled={loading}
             />
 
             <InputField
-              type="password"
+              type="text"
               placeholder="Enter new Password"
               label="New Password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              name="newPassword"
+              value={password.newPassword}
+              onChange={handlePasswordChange}
               disabled={loading}
             />
 
@@ -184,8 +197,9 @@ export default function ProfileEditCard() {
               type="password"
               placeholder="Confirm new Password"
               label="Confirm New Password"
-              value={confirmNewPassword}
-              onChange={(e) => setConfirmNewPassword(e.target.value)}
+              name="confirmNewPassword"
+              value={password.confirmNewPassword}
+              onChange={handlePasswordChange}
               disabled={loading}
             />
           </>

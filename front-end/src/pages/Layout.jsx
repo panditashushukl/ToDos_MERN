@@ -11,7 +11,6 @@ import {
 import { useState } from "react";
 import NotFound from "./NotFound";
 import { useAuth } from "./../contexts/AuthContext";
-import { ToastProvider } from "./../contexts/ToastContext";
 
 export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -27,7 +26,15 @@ export function Layout() {
   const closeAuthModal = () => setAuthModalOpen(false);
 
   if (isLoading) {
-    return <LoadingCard />;
+    return (
+      <LoadingCard>
+        <div className="space-y-3">
+          <div className="h-4 bg-white/10 rounded w-3/4 animate-pulse" />
+          <div className="h-4 bg-white/10 rounded w-2/3 animate-pulse" />
+          <div className="h-4 bg-white/10 rounded w-1/2 animate-pulse" />
+        </div>
+      </LoadingCard>
+    );
   }
 
   return (
@@ -53,9 +60,7 @@ export function Layout() {
           path="/edit-profile"
           element={
             <ProtectedRoute>
-              <ToastProvider>
-                <ProfileEditCard />
-              </ToastProvider>
+              <ProfileEditCard />
             </ProtectedRoute>
           }
         />
