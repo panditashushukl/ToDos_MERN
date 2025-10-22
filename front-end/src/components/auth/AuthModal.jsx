@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LoginForm, RegisterForm } from "./../index"
+import { LoginForm, RegisterForm } from "../index"
 
 const AuthModal = ({ isOpen, onClose }) => {
   const [isLogin, setIsLogin] = useState(true);

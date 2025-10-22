@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { useAuth } from "./../../contexts/AuthContext";
-import { BlueButton, InputField } from "./../index";
+import { useAuth } from "../../contexts/AuthContext";
+import { BlueButton, InputField } from "../index";
 
 const LoginForm = ({ onSwitchToRegister, onClose }) => {
   const [formData, setFormData] = useState({
