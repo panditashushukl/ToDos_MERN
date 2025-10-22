@@ -8,6 +8,7 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
     content: "",
     label: "General",
     dueDate: "",
+    dueTime: "",
     id: null,
   });
 
@@ -23,10 +24,31 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
   // Load editing todo into form
   useEffect(() => {
     if (editingTodo) {
+      let dateStr = "";
+      let timeStr = "23:59";
+
+      if (editingTodo.dueDate) {
+        const dueDateTime = new Date(editingTodo.dueDate);
+        console.log({ dueDateTime });
+
+        if (!isNaN(dueDateTime)) {
+          const year = dueDateTime.getFullYear();
+          const month = String(dueDateTime.getMonth() + 1).padStart(2, "0");
+          const day = String(dueDateTime.getDate()).padStart(2, "0");
+          const hours = String(dueDateTime.getHours()).padStart(2, "0");
+          const minutes = String(dueDateTime.getMinutes()).padStart(2, "0");
+
+          dateStr = `${year}-${month}-${day}`;
+          timeStr = `${hours}:${minutes}`;
+
+        }
+      }
+
       setFormData({
         content: editingTodo.content || "",
         label: editingTodo.label || "General",
-        dueDate: editingTodo.dueDate || "",
+        dueDate: dateStr,
+        dueTime: timeStr,
         id: editingTodo.id || editingTodo._id || null,
       });
       setCustomLabel(editingTodo.label || "General");
@@ -40,6 +62,7 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
       content: "",
       label: "General",
       dueDate: "",
+      dueTime: "",
       id: null,
     });
     setCustomLabel("General");
@@ -48,7 +71,19 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "dueDate") {
+      setFormData((prev) => ({
+        ...prev,
+        dueDate: value,
+        dueTime: value ? "23:59" : "",
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleLabelChange = (e) => {
@@ -84,21 +119,37 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
       : formData.label.trim();
 
     if (!trimmedContent) {
-      addToast({ type: "error", title: "Validation Error", message: "Content is required" });
+      addToast({
+        type: "error",
+        title: "Validation Error",
+        message: "Content is required",
+      });
       return;
     }
 
     if (!trimmedLabel) {
-      addToast({ type: "error", title: "Validation Error", message: "Label is required" });
+      addToast({
+        type: "error",
+        title: "Validation Error",
+        message: "Label is required",
+      });
       return;
     }
 
     setIsLoading(true);
 
+    let dueDateISO = null;
+    if (formData.dueDate) {
+      const combinedDateTime = new Date(
+        `${formData.dueDate}T${formData.dueTime || "23:59"}:00`
+      );
+      dueDateISO = combinedDateTime.toISOString();
+    }
+
     const todoData = {
       content: trimmedContent,
       label: trimmedLabel,
-      dueDate: formData.dueDate || null,
+      dueDate: dueDateISO,
     };
 
     let result;
@@ -134,7 +185,12 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
   );
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3" id="todo-form" name="todo-form">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-3"
+      id="todo-form"
+      name="todo-form"
+    >
       <div className="flex gap-2">
         <InputField
           type="text"
@@ -180,7 +236,6 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
             onBlur={handleLabelBlur}
             disabled={isLoading}
             autoComplete="off"
-
           />
 
           {showLabelSuggestions && filteredLabels.length > 0 && (
@@ -198,20 +253,33 @@ function TodoForm({ editingTodo = null, onSave = () => {} }) {
           )}
         </div>
 
-        <div className="flex flex-col gap-1 md:flex-none md:w-48">
-          <InputField
-            type="datetime-local"
-            name="dueDate"
-            id="dueDate"
-            title="Due Date"
-            label="Due Date"
-            value={formData.dueDate}
-            onChange={handleChange}
-            disabled={isLoading}
-          />
+        <div className="flex flex-col md:flex-row gap-2 md:items-end w-full md:w-auto">
+          <div className="flex-1">
+            <InputField
+              type="date"
+              name="dueDate"
+              id="dueDate"
+              label="Due Date"
+              value={formData.dueDate}
+              onChange={handleChange}
+              disabled={isLoading}
+              className="w-full"
+            />
+          </div>
+          <div className="flex-1">
+            <InputField
+              type="time"
+              name="dueTime"
+              id="dueTime"
+              label="Due Time"
+              value={formData.dueTime}
+              onChange={handleChange}
+              disabled={isLoading}
+              className="w-full"
+            />
+          </div>
         </div>
       </div>
-
     </form>
   );
 }

@@ -50,7 +50,7 @@ const InputField = ({
             peer-placeholder-shown:text-base
             peer-placeholder-shown:text-gray-500
             ${
-              (value || type === "date"  || type==="datetime-local")
+              (value || type === "date"  || type==="time")
                 ? "top-[-0.6rem] scale-90 text-indigo-400"
                 : "peer-focus:top-[-0.6rem] peer-focus:scale-90 peer-focus:text-indigo-400"
             }
